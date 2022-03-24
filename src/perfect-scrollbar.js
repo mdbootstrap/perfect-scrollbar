@@ -57,6 +57,7 @@
     return this.each(function () {
       var settings = $.extend(true, {}, defaultSettings);
       var $this = $(this);
+      var isPluginAlive = function () { return !!$this; };
 
       if (typeof suppliedSettings === "object") {
         // Override default settings with any supplied
@@ -162,7 +163,7 @@
       }
 
       function updateCss() {
-        var xRailOffset = {width: containerWidth, display: scrollbarXActive ? "inherit" : "none"};
+        var xRailOffset = {width: containerWidth};
         if (isRtl) {
           xRailOffset.left = $this.scrollLeft() + containerWidth - contentWidth;
         } else {
@@ -175,7 +176,7 @@
         }
         $scrollbarXRail.css(xRailOffset);
 
-        var railYOffset = {top: $this.scrollTop(), height: containerHeight, display: scrollbarYActive ? "inherit" : "none"};
+        var railYOffset = {top: $this.scrollTop(), height: containerHeight};
 
         if (isScrollbarYUsingRight) {
           if (isRtl) {
@@ -544,6 +545,11 @@
         function startScrolling() {
           if (!scrollingLoop) {
             scrollingLoop = setInterval(function () {
+              if (!isPluginAlive()) {
+                clearInterval(scrollingLoop);
+                return;
+              }
+
               $this.scrollTop($this.scrollTop() + scrollDiff.top);
               $this.scrollLeft($this.scrollLeft() + scrollDiff.left);
               updateGeometry();
@@ -634,7 +640,7 @@
         var startOffset = {};
         var startTime = 0;
         var speed = {};
-        var breakingProcess = null;
+        var easingLoop = null;
         var inGlobalTouch = false;
         var inLocalTouch = false;
 
@@ -658,7 +664,7 @@
           if (event.targetTouches && event.targetTouches.length === 1) {
             return true;
           }
-          if (event.pointerType && event.pointerType !== 'mouse') {
+          if (event.pointerType && event.pointerType !== 'mouse' && event.pointerType !== event.MSPOINTER_TYPE_MOUSE) {
             return true;
           }
           return false;
@@ -674,8 +680,8 @@
 
             startTime = (new Date()).getTime();
 
-            if (breakingProcess !== null) {
-              clearInterval(breakingProcess);
+            if (easingLoop !== null) {
+              clearInterval(easingLoop);
             }
 
             e.stopPropagation();
@@ -710,10 +716,15 @@
           if (!inGlobalTouch && inLocalTouch) {
             inLocalTouch = false;
 
-            clearInterval(breakingProcess);
-            breakingProcess = setInterval(function () {
+            clearInterval(easingLoop);
+            easingLoop = setInterval(function () {
+              if (!isPluginAlive()) {
+                clearInterval(easingLoop);
+                return;
+              }
+
               if (Math.abs(speed.x) < 0.01 && Math.abs(speed.y) < 0.01) {
-                clearInterval(breakingProcess);
+                clearInterval(easingLoop);
                 return;
               }
 
@@ -769,6 +780,7 @@
         $scrollbarYRail.remove();
 
         // clean all variables
+        $this =
         $scrollbarXRail =
         $scrollbarYRail =
         $scrollbarX =
