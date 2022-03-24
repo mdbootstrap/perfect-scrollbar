@@ -6,7 +6,8 @@
   // The default settings for the plugin
   var defaultSettings = {
     wheelSpeed: 10,
-    wheelPropagation: false
+    wheelPropagation: false,
+    minScrollbarLength: null
   };
 
   $.fn.perfectScrollbar = function (suppliedSettings, option) {
@@ -55,15 +56,22 @@
           scrollbarYRight = parseInt($scrollbarY.css('right'), 10);
 
       var updateContentScrollTop = function () {
-        var scrollTop = parseInt(scrollbarYTop * contentHeight / containerHeight, 10);
+        var scrollTop = parseInt(scrollbarYTop * (contentHeight - containerHeight) / (containerHeight - scrollbarYHeight), 10);
         $this.scrollTop(scrollTop);
         $scrollbarX.css({bottom: scrollbarXBottom - scrollTop});
       };
 
       var updateContentScrollLeft = function () {
-        var scrollLeft = parseInt(scrollbarXLeft * contentWidth / containerWidth, 10);
+        var scrollLeft = parseInt(scrollbarXLeft * (contentWidth - containerWidth) / (containerWidth - scrollbarXWidth), 10);
         $this.scrollLeft(scrollLeft);
         $scrollbarY.css({right: scrollbarYRight - scrollLeft});
+      };
+
+      var getSettingsAdjustedThumbSize = function (thumbSize) {
+        if (settings.minScrollbarLength) {
+          thumbSize = Math.max(thumbSize, settings.minScrollbarLength);
+        }
+        return thumbSize;
       };
 
       var updateScrollbarCss = function () {
@@ -77,8 +85,8 @@
         contentWidth = $this.prop('scrollWidth');
         contentHeight = $this.prop('scrollHeight');
         if (containerWidth < contentWidth) {
-          scrollbarXWidth = parseInt(containerWidth * containerWidth / contentWidth, 10);
-          scrollbarXLeft = parseInt($this.scrollLeft() * containerWidth / contentWidth, 10);
+          scrollbarXWidth = getSettingsAdjustedThumbSize(parseInt(containerWidth * containerWidth / contentWidth, 10));
+          scrollbarXLeft = parseInt($this.scrollLeft() * (containerWidth - scrollbarXWidth) / (contentWidth - containerWidth), 10);
         }
         else {
           scrollbarXWidth = 0;
@@ -86,8 +94,8 @@
           $this.scrollLeft(0);
         }
         if (containerHeight < contentHeight) {
-          scrollbarYHeight = parseInt(containerHeight * containerHeight / contentHeight, 10);
-          scrollbarYTop = parseInt($this.scrollTop() * containerHeight / contentHeight, 10);
+          scrollbarYHeight = getSettingsAdjustedThumbSize(parseInt(containerHeight * containerHeight / contentHeight, 10));
+          scrollbarYTop = parseInt($this.scrollTop() * (containerHeight - scrollbarYHeight) / (contentHeight - containerHeight), 10);
         }
         else {
           scrollbarYHeight = 0;
@@ -352,7 +360,7 @@
         }
       };
 
-      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+      var supportsTouch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch);
 
       var initialize = function () {
         var ieMatch = navigator.userAgent.toLowerCase().match(/(msie) ([\w.]+)/);
@@ -364,7 +372,7 @@
         updateBarSizeAndPosition();
         bindMouseScrollXHandler();
         bindMouseScrollYHandler();
-        if (isMobile) {
+        if (supportsTouch) {
           bindMobileTouchHandler();
         }
         if ($this.mousewheel) {
