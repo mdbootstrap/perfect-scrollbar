@@ -1,8 +1,8 @@
 import * as CSS from './lib/css';
 import * as DOM from './lib/dom';
+import cls from './lib/class-names';
 import EventManager from './lib/event-manager';
 import updateGeometry from './update-geometry';
-import updateScroll from './update-scroll';
 import { toInt, outerWidth } from './lib/util';
 
 import clickRail from './handlers/click-rail';
@@ -15,6 +15,7 @@ const defaultSettings = () => ({
   handlers: ['click-rail', 'drag-thumb', 'keyboard', 'wheel', 'touch'],
   maxScrollbarLength: null,
   minScrollbarLength: null,
+  scrollingThreshold: 1000,
   scrollXMarginOffset: 0,
   scrollYMarginOffset: 0,
   suppressScrollX: false,
@@ -34,8 +35,6 @@ const handlers = {
   touch,
 };
 
-const psClassName = 'ps';
-
 export default class PerfectScrollbar {
   constructor(element, userSettings = {}) {
     if (typeof element === 'string') {
@@ -48,7 +47,7 @@ export default class PerfectScrollbar {
 
     this.element = element;
 
-    element.classList.add(psClassName);
+    element.classList.add(cls.main);
 
     this.settings = defaultSettings();
     for (const key in userSettings) {
@@ -60,8 +59,8 @@ export default class PerfectScrollbar {
     this.contentWidth = null;
     this.contentHeight = null;
 
-    const focus = () => element.classList.add('ps--focus');
-    const blur = () => element.classList.remove('ps--focus');
+    const focus = () => element.classList.add(cls.state.focus);
+    const blur = () => element.classList.remove(cls.state.focus);
 
     this.isRtl = CSS.get(element).direction === 'rtl';
     this.isNegativeScroll = (() => {
@@ -78,9 +77,9 @@ export default class PerfectScrollbar {
     this.event = new EventManager();
     this.ownerDocument = element.ownerDocument || document;
 
-    this.scrollbarXRail = DOM.div('ps__rail-x');
+    this.scrollbarXRail = DOM.div(cls.element.rail('x'));
     element.appendChild(this.scrollbarXRail);
-    this.scrollbarX = DOM.div('ps__thumb-x');
+    this.scrollbarX = DOM.div(cls.element.thumb('x'));
     this.scrollbarXRail.appendChild(this.scrollbarX);
     this.scrollbarX.setAttribute('tabindex', 0);
     this.event.bind(this.scrollbarX, 'focus', focus);
@@ -106,9 +105,9 @@ export default class PerfectScrollbar {
     this.railXWidth = null;
     this.railXRatio = null;
 
-    this.scrollbarYRail = DOM.div('ps__rail-y');
+    this.scrollbarYRail = DOM.div(cls.element.rail('y'));
     element.appendChild(this.scrollbarYRail);
-    this.scrollbarY = DOM.div('ps__thumb-y');
+    this.scrollbarY = DOM.div(cls.element.thumb('y'));
     this.scrollbarYRail.appendChild(this.scrollbarY);
     this.scrollbarY.setAttribute('tabindex', 0);
     this.event.bind(this.scrollbarY, 'focus', focus);
@@ -134,6 +133,21 @@ export default class PerfectScrollbar {
     this.railYHeight = null;
     this.railYRatio = null;
 
+    this.reach = {
+      x:
+        element.scrollLeft <= 0
+          ? 'start'
+          : element.scrollLeft >= this.contentWidth - this.containerWidth
+            ? 'end'
+            : null,
+      y:
+        element.scrollTop <= 0
+          ? 'start'
+          : element.scrollTop >= this.contentHeight - this.containerHeight
+            ? 'end'
+            : null,
+    };
+
     this.settings.handlers.forEach(handlerName => handlers[handlerName](this));
 
     this.event.bind(this.element, 'scroll', () => updateGeometry(this));
@@ -141,7 +155,7 @@ export default class PerfectScrollbar {
   }
 
   get isInitialized() {
-    return this.element.classList.contains(psClassName);
+    return this.element.classList.contains(cls.main);
   }
 
   update() {
@@ -170,10 +184,6 @@ export default class PerfectScrollbar {
 
     updateGeometry(this);
 
-    // Update top/left scroll to trigger events
-    updateScroll(this, 'top', this.element.scrollTop);
-    updateScroll(this, 'left', this.element.scrollLeft);
-
     CSS.set(this.scrollbarXRail, { display: '' });
     CSS.set(this.scrollbarYRail, { display: '' });
   }
@@ -199,11 +209,9 @@ export default class PerfectScrollbar {
   }
 
   removePsClasses() {
-    for (let i = 0; i < this.element.classList.length; i++) {
-      const className = this.element.classList[i];
-      if (className === 'ps' || className.indexOf('ps-') === 0) {
-        this.element.classList.remove(className);
-      }
-    }
+    this.element.className = this.element.className
+      .split(' ')
+      .filter(name => !name.match(/^ps([-_].+|)$/))
+      .join(' ');
   }
 }

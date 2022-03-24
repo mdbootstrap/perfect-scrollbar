@@ -1,19 +1,4 @@
-let scrollingClassTimeout = { x: null, y: null };
-function setScrollingClass(element, y) {
-  const cls = `ps--scrolling-${y}`;
-
-  if (element.classList.contains(cls)) {
-    clearTimeout(scrollingClassTimeout[y]);
-  } else {
-    element.classList.add(cls);
-  }
-
-  // 1s for threshold
-  scrollingClassTimeout[y] = setTimeout(
-    () => element.classList.remove(cls),
-    1000
-  );
-}
+import { setScrollingClassInstantly } from './lib/class-names';
 
 function createEvent(name) {
   if (typeof window.CustomEvent === 'function') {
@@ -25,7 +10,7 @@ function createEvent(name) {
   }
 }
 
-export default function(i, axis, value) {
+export default function(i, axis, value, useScrollingClass = true) {
   let fields;
   if (axis === 'top') {
     fields = [
@@ -49,23 +34,26 @@ export default function(i, axis, value) {
     throw new Error('A proper axis should be provided');
   }
 
-  updateScroll(i, value, fields);
+  updateScroll(i, value, fields, useScrollingClass);
 }
 
 function updateScroll(
   i,
   value,
-  [contentHeight, containerHeight, scrollTop, y, up, down]
+  [contentHeight, containerHeight, scrollTop, y, up, down],
+  useScrollingClass
 ) {
   const element = i.element;
 
-  let reach = 0; // -1 for start, +1 for end, 0 for none
   let mitigated = false;
+
+  // reset reach
+  i.reach[y] = null;
 
   // don't allow negative scroll offset
   if (value <= 0) {
     value = 0;
-    reach = -1;
+    i.reach[y] = 'start';
   }
 
   // don't allow scroll past container
@@ -77,7 +65,7 @@ function updateScroll(
       mitigated = true;
     }
 
-    reach = 1;
+    i.reach[y] = 'end';
   }
 
   let diff = element[scrollTop] - value;
@@ -95,12 +83,12 @@ function updateScroll(
       element[scrollTop] = value;
     }
 
-    if (reach) {
-      element.dispatchEvent(
-        createEvent(`ps-${y}-reach-${reach > 0 ? 'end' : 'start'}`)
-      );
+    if (i.reach[y]) {
+      element.dispatchEvent(createEvent(`ps-${y}-reach-${i.reach[y]}`));
     }
 
-    setScrollingClass(element, y);
+    if (useScrollingClass) {
+      setScrollingClassInstantly(i, y);
+    }
   }
 }

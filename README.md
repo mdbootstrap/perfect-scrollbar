@@ -225,6 +225,14 @@ over that number of pixels.
 
 **Default**: `null`
 
+### `scrollingThreshold {Number}`
+
+This sets threashold for `ps--scrolling-x` and `ps--scrolling-y` classes to
+remain. In the default CSS, they make scrollbars shown regardless of hover
+state. The unit is millisecond.
+
+**Default**: `1000`
+
 ### `useBothWheelAxes {Boolean}`
 
 When set to true, and only one (vertical or horizontal) scrollbar is visible
@@ -265,6 +273,10 @@ that Y axis scroll bar is not enabled just because of a few pixels.
 ## Events
 
 perfect-scrollbar dispatches custom events.
+
+```js
+container.addEventListener('ps-scroll-x', () => ...);
+```
 
 ### `ps-scroll-y`
 
@@ -307,8 +319,13 @@ This event fires when scrolling reaches the start of the x-axis.
 
 This event fires when scrolling reaches the end of the x-axis.
 
+You can also watch the reach state via the `reach` property.
+
 ```js
-container.addEventListener('ps-scroll-x', () => ...);
+const ps = new PerfectScrollbar(...);
+
+console.log(ps.reach.x); // => 'start' or 'end' or null
+console.log(ps.reach.y); // => 'start' or 'end' or null
 ```
 
 ## Helpdesk
