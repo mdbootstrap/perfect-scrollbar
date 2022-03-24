@@ -2,9 +2,9 @@
   "name": "perfect-scrollbar",
   "title": "perfect-scrollbar",
   "description": "Tiny but perfect jquery scrollbar plugin.",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": {
-    "name": "Hyeonje Alex Jun",
+    "name": "Hyunje Alex Jun",
     "email": "me@noraesae.net",
     "url": "https://github.com/noraesae/"
   },
@@ -29,7 +29,7 @@
   "bugs": "https://github.com/noraesae/perfect-scrollbar/issues/",
   "maintainers": [
     {
-      "name": "Hyeonje Alex Jun",
+      "name": "Hyunje Alex Jun",
       "email": "me@noraesae.net",
       "url": "https://github.com/noraesae/"
     }

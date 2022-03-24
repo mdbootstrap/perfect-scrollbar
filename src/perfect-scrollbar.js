@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, 2014 Hyeonje Alex Jun and other contributors
+/* Copyright (c) 2012, 2014 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
 (function (factory) {
@@ -243,9 +243,13 @@
 
         updateScrollbarCss();
 
-        // Show scrollbars again after updated
-        $scrollbarXRail.show();
-        $scrollbarYRail.show();
+        // Show scrollbars if needed after updated
+        if (!settings.suppressScrollX) {
+          $scrollbarXRail.show();
+        }
+        if (!settings.suppressScrollY) {
+          $scrollbarYRail.show();
+        }
       };
 
       var bindMouseScrollXHandler = function () {
