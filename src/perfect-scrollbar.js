@@ -1,6 +1,7 @@
 /* Copyright (c) 2012 HyeonJe Jun (http://github.com/noraesae)
  * Licensed under the MIT License
  */
+'use strict';
 ((function ($) {
 
   // The default settings for the plugin
@@ -14,7 +15,9 @@
 
     return this.each(function () {
       // Use the default settings
-      var settings = $.extend(true, {}, defaultSettings);
+      var settings = $.extend(true, {}, defaultSettings),
+          $this = $(this);
+
       if (typeof suppliedSettings === "object") {
         // But over-ride any supplied
         $.extend(true, settings, suppliedSettings);
@@ -23,26 +26,33 @@
         option = suppliedSettings;
       }
 
+      // Catch options
+
       if (option === 'update') {
-        if ($(this).data('perfect-scrollbar-update')) {
-          $(this).data('perfect-scrollbar-update')();
+        if ($this.data('perfect-scrollbar-update')) {
+          $this.data('perfect-scrollbar-update')();
         }
-        return $(this);
+        return $this;
       }
       else if (option === 'destroy') {
-        if ($(this).data('perfect-scrollbar-destroy')) {
-          $(this).data('perfect-scrollbar-destroy')();
+        if ($this.data('perfect-scrollbar-destroy')) {
+          $this.data('perfect-scrollbar-destroy')();
         }
-        return $(this);
+        return $this;
       }
 
-      if ($(this).data('perfect-scrollbar')) {
+      if ($this.data('perfect-scrollbar')) {
         // if there's already perfect-scrollbar
-        return $(this).data('perfect-scrollbar');
+        return $this.data('perfect-scrollbar');
       }
 
-      var $this = $(this).addClass('ps-container'),
-          $scrollbarX = $("<div class='ps-scrollbar-x'></div>").appendTo($this),
+
+      // Or generate new perfectScrollbar
+
+      // Set class to the container
+      $this.addClass('ps-container');
+
+      var $scrollbarX = $("<div class='ps-scrollbar-x'></div>").appendTo($this),
           $scrollbarY = $("<div class='ps-scrollbar-y'></div>").appendTo($this),
           containerWidth,
           containerHeight,
@@ -84,6 +94,7 @@
         containerHeight = $this.height();
         contentWidth = $this.prop('scrollWidth');
         contentHeight = $this.prop('scrollHeight');
+
         if (containerWidth < contentWidth) {
           scrollbarXWidth = getSettingsAdjustedThumbSize(parseInt(containerWidth * containerWidth / contentWidth, 10));
           scrollbarXLeft = parseInt($this.scrollLeft() * (containerWidth - scrollbarXWidth) / (contentWidth - containerWidth), 10);
@@ -93,6 +104,7 @@
           scrollbarXLeft = 0;
           $this.scrollLeft(0);
         }
+
         if (containerHeight < contentHeight) {
           scrollbarYHeight = getSettingsAdjustedThumbSize(parseInt(containerHeight * containerHeight / contentHeight, 10));
           scrollbarYTop = parseInt($this.scrollTop() * (containerHeight - scrollbarYHeight) / (contentHeight - containerHeight), 10);
@@ -171,6 +183,9 @@
             $scrollbarX.removeClass('in-scrolling');
           }
         });
+
+        currentLeft =
+        currentPageX = null;
       };
 
       var bindMouseScrollYHandler = function () {
@@ -199,6 +214,9 @@
             $scrollbarY.removeClass('in-scrolling');
           }
         });
+
+        currentTop =
+        currentPageY = null;
       };
 
       // bind handlers
@@ -222,6 +240,7 @@
           return true;
         };
 
+        var shouldPrevent = false;
         $this.bind('mousewheel.perfect-scroll', function (e, delta, deltaX, deltaY) {
           $this.scrollTop($this.scrollTop() - (deltaY * settings.wheelSpeed));
           $this.scrollLeft($this.scrollLeft() + (deltaX * settings.wheelSpeed));
@@ -229,14 +248,18 @@
           // update bar position
           updateBarSizeAndPosition();
 
-          if (shouldPreventDefault(deltaX, deltaY)) {
+          shouldPrevent = shouldPreventDefault(deltaX, deltaY);
+          if (shouldPrevent) {
             e.preventDefault();
           }
         });
 
         // fix Firefox scroll problem
-        $this.bind('DOMMouseScroll.perfect-scroll', function (e) { e.preventDefault(); });
-        $this.bind('MozMousePixelScroll.perfect-scroll', function (e) { e.preventDefault(); });
+        $this.bind('MozMousePixelScroll.perfect-scroll', function (e) {
+          if (shouldPrevent) {
+            e.preventDefault();
+          }
+        });
       };
 
       // bind mobile touch handler
@@ -299,6 +322,7 @@
           }
         });
         $this.bind("touchend.perfect-scroll", function (e) {
+          clearInterval(breakingProcess);
           breakingProcess = setInterval(function () {
             if (Math.abs(speed.x) < 0.01 && Math.abs(speed.y) < 0.01) {
               clearInterval(breakingProcess);
@@ -314,13 +338,28 @@
       };
 
       var destroy = function () {
-        $scrollbarX.remove();
-        $scrollbarY.remove();
         $this.unbind('.perfect-scroll');
         $(window).unbind('.perfect-scroll');
+        $(document).unbind('.perfect-scroll');
         $this.data('perfect-scrollbar', null);
         $this.data('perfect-scrollbar-update', null);
         $this.data('perfect-scrollbar-destroy', null);
+        $scrollbarX.remove();
+        $scrollbarY.remove();
+
+        // clean all variables
+        $scrollbarX =
+        $scrollbarY =
+        containerWidth =
+        containerHeight =
+        contentWidth =
+        contentHeight =
+        scrollbarXWidth =
+        scrollbarXLeft =
+        scrollbarXBottom =
+        scrollbarYHeight =
+        scrollbarYTop =
+        scrollbarYRight = null;
       };
 
       var ieSupport = function (version) {
