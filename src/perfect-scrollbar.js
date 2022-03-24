@@ -22,6 +22,7 @@
     wheelSpeed: 10,
     wheelPropagation: false,
     minScrollbarLength: null,
+    maxScrollbarLength: null,
     useBothWheelAxes: false,
     useKeyboard: true,
     suppressScrollX: false,
@@ -102,7 +103,9 @@
           isScrollbarYUsingRight = scrollbarYRight === scrollbarYRight, // !isNaN
           scrollbarYLeft = isScrollbarYUsingRight ? null: parseInt($scrollbarYRail.css('left'), 10),
           isRtl = $this.css('direction') === "rtl",
-          eventClassName = getEventClassName();
+          eventClassName = getEventClassName(),
+          railBorderXWidth = parseInt($scrollbarXRail.css('borderLeftWidth'), 10) + parseInt($scrollbarXRail.css('borderRightWidth'), 10),
+          railBorderYWidth = parseInt($scrollbarXRail.css('borderTopWidth'), 10) + parseInt($scrollbarXRail.css('borderBottomWidth'), 10);
 
       var updateContentScrollTop = function (currentTop, deltaY) {
         var newTop = currentTop + deltaY,
@@ -156,6 +159,9 @@
         if (settings.minScrollbarLength) {
           thumbSize = Math.max(thumbSize, settings.minScrollbarLength);
         }
+        if (settings.maxScrollbarLength) {
+          thumbSize = Math.min(thumbSize, settings.maxScrollbarLength);
+        }
         return thumbSize;
       };
 
@@ -190,8 +196,20 @@
         }
         $scrollbarYRail.css(scrollbarYStyles);
 
-        $scrollbarX.css({left: scrollbarXLeft, width: scrollbarXWidth});
-        $scrollbarY.css({top: scrollbarYTop, height: scrollbarYHeight});
+        $scrollbarX.css({left: scrollbarXLeft, width: scrollbarXWidth - railBorderXWidth});
+        $scrollbarY.css({top: scrollbarYTop, height: scrollbarYHeight - railBorderYWidth});
+
+        if (scrollbarXActive) {
+          $this.addClass('ps-active-x');
+        } else {
+          $this.removeClass('ps-active-x');
+        }
+
+        if (scrollbarYActive) {
+          $this.addClass('ps-active-y');
+        } else {
+          $this.removeClass('ps-active-y');
+        }
       };
 
       var updateBarSizeAndPosition = function () {
@@ -386,6 +404,10 @@
 
         var shouldPrevent = false;
         $(document).bind('keydown' + eventClassName, function (e) {
+          if (e.isDefaultPrevented && e.isDefaultPrevented()) {
+            return;
+          }
+
           if (!hovered || $(document.activeElement).is(":input,[contenteditable]")) {
             return;
           }
