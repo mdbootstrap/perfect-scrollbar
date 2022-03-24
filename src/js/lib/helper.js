@@ -56,28 +56,24 @@ exports.outerWidth = function (element) {
          toInt(dom.css(element, 'borderRightWidth'));
 };
 
-exports.startScrolling = function (element, axis) {
-  cls.add(element, 'ps-in-scrolling');
-  if (typeof axis !== 'undefined') {
-    cls.add(element, 'ps-' + axis);
-  } else {
-    cls.add(element, 'ps-x');
-    cls.add(element, 'ps-y');
-  }
-};
+function toggleScrolling(handler) {
+  return function (element, axis) {
+    handler(element, 'ps--in-scrolling');
+    if (typeof axis !== 'undefined') {
+      handler(element, 'ps--' + axis);
+    } else {
+      handler(element, 'ps--x');
+      handler(element, 'ps--y');
+    }
+  };
+}
 
-exports.stopScrolling = function (element, axis) {
-  cls.remove(element, 'ps-in-scrolling');
-  if (typeof axis !== 'undefined') {
-    cls.remove(element, 'ps-' + axis);
-  } else {
-    cls.remove(element, 'ps-x');
-    cls.remove(element, 'ps-y');
-  }
-};
+exports.startScrolling = toggleScrolling(cls.add);
+
+exports.stopScrolling = toggleScrolling(cls.remove);
 
 exports.env = {
-  isWebKit: 'WebkitAppearance' in document.documentElement.style,
-  supportsTouch: (('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch),
-  supportsIePointer: window.navigator.msMaxTouchPoints !== null
+  isWebKit: typeof document !== 'undefined' && 'WebkitAppearance' in document.documentElement.style,
+  supportsTouch: typeof window !== 'undefined' && (('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch),
+  supportsIePointer: typeof window !== 'undefined' && window.navigator.msMaxTouchPoints !== null
 };
