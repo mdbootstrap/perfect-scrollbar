@@ -312,6 +312,57 @@ The number of pixels the content height can surpass the container height without
 When set to false, when clicking on a rail, the click event will be allowed to propagate.  
 **Default: true**
 
+### useSelectionScroll
+When set to true, you can scroll the container by selecting text and move the cursor.  
+**Default: false**
+
+## Events
+
+perfect-scrollbar dispatches custom events.
+
+### ps-scroll-y
+This event fires when the y-axis is scrolled in either direction.
+
+### ps-scroll-x
+This event fires when the x-axis is scrolled in either direction.
+
+### ps-scroll-up
+This event fires when scrolling upwards.
+
+### ps-scroll-down
+This event fires when scrolling downwards.
+
+### ps-scroll-left
+This event fires when scrolling to the left.
+
+### ps-scroll-right
+This event fires when scrolling to the right.
+
+### ps-y-reach-start
+This event fires when scrolling reaches the start of the y-axis.
+
+### ps-y-reach-end
+This event fires when scrolling reaches the end of the y-axis (useful for infinite scroll).
+
+### ps-x-reach-start
+This event fires when scrolling reaches the start of the x-axis.
+
+### ps-x-reach-end
+This event fires when scrolling reaches the end of the x-axis.
+
+You can listen to these events either with vanilla JavaScript
+```javascript
+document.addEventListener('ps-scroll-x', function () {
+  // ...
+})
+```
+or with jQuery
+```javascript
+$(document).on('ps-scroll-x', function () {
+  // ...
+})
+```
+
 ## Contribution
 
 #### Please read [Contributing](https://github.com/noraesae/perfect-scrollbar/wiki/Contributing) in the wiki before making any contribution.
