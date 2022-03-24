@@ -41,10 +41,13 @@ Requirements
 
 To make this plugin *perfect*, some requirements were not avoidable. But they're all very trivial and there's nothing to worry about.
 
-* there must be the *one* content element(like div) for the container.
 * the container must have a 'position' css style.
 * the scrollbar's position must be 'absolute'.
 * the scrollbar-x must have a 'bottom' css style, and the scrollbar-y must have a 'right' css style.
+
+The requirement below is for perfect-scrollbar &lt;= 0.3.4
+
+* there must be the *one* content element(like div) for the container.
  
 Optional parameters
 -------------------
@@ -111,13 +114,27 @@ If you want to make this plugin's update function more responsive, [jquery-resiz
 Contribution
 ------------
 
+#### Please read [Contributing](https://github.com/noraesae/perfect-scrollbar/wiki/Contributing) in the wiki before making any contibution.
+
+
 I *really* welcome contributions! Please feel free to fork and issue pull requests when...
 
 * You have a very nice idea to improve this plugin!
 * You found a bug!
 * You're good at English and can help my bad English!
 
-Also you can just open issues, and I can look into them.
+For IE problems, please refer to [IE Support](https://github.com/noraesae/perfect-scrollbar#ie-support)
+
+IE Support
+----------
+
+This plugin supports old IE browsers in the **minimum** range. The plugin is tested in IEs >= IE6 and works(not well, but works).
+
+**But the project will not accept the patches to fix IE problems in IE 6/7/8.**
+
+From jQuery 2.0, jQuery also will not support IE 6/7/8. I also think that supporting old browsers really breaks the web development conventions.
+
+When old IEs should be supported, please fork the project and make patches personally.
 
 License
 -------
