@@ -1,10 +1,10 @@
 'use strict';
 
-var h = require('../../lib/helper')
-  , d = require('../../lib/dom')
-  , instances = require('../instances')
-  , updateGeometry = require('../update-geometry')
-  , updateScroll = require('../update-scroll');
+var _ = require('../../lib/helper');
+var dom = require('../../lib/dom');
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
 
 function bindKeyboardHandler(element, i) {
   var hovered = false;
@@ -44,8 +44,8 @@ function bindKeyboardHandler(element, i) {
       return;
     }
 
-    var focused = d.matches(i.scrollbarX, ':focus') ||
-                  d.matches(i.scrollbarY, ':focus');
+    var focused = dom.matches(i.scrollbarX, ':focus') ||
+                  dom.matches(i.scrollbarY, ':focus');
 
     if (!hovered && !focused) {
       return;
@@ -53,11 +53,15 @@ function bindKeyboardHandler(element, i) {
 
     var activeElement = document.activeElement ? document.activeElement : i.ownerDocument.activeElement;
     if (activeElement) {
-      // go deeper if element is a webcomponent
-      while (activeElement.shadowRoot) {
-        activeElement = activeElement.shadowRoot.activeElement;
+      if (activeElement.tagName === 'IFRAME') {
+        activeElement = activeElement.contentDocument.activeElement;
+      } else {
+        // go deeper if element is a webcomponent
+        while (activeElement.shadowRoot) {
+          activeElement = activeElement.shadowRoot.activeElement;
+        }
       }
-      if (h.isEditable(activeElement)) {
+      if (_.isEditable(activeElement)) {
         return;
       }
     }

@@ -1,10 +1,10 @@
 'use strict';
 
-var cls = require('../lib/class')
-  , d = require('../lib/dom')
-  , h = require('../lib/helper')
-  , instances = require('./instances')
-  , updateScroll = require('./update-scroll');
+var _ = require('../lib/helper');
+var cls = require('../lib/class');
+var dom = require('../lib/dom');
+var instances = require('./instances');
+var updateScroll = require('./update-scroll');
 
 function getThumbSize(i, thumbSize) {
   if (i.settings.minScrollbarLength) {
@@ -28,7 +28,7 @@ function updateCss(element, i) {
   } else {
     xRailOffset.top = i.scrollbarXTop + element.scrollTop;
   }
-  d.css(i.scrollbarXRail, xRailOffset);
+  dom.css(i.scrollbarXRail, xRailOffset);
 
   var yRailOffset = {top: element.scrollTop, height: i.railYHeight};
   if (i.isScrollbarYUsingRight) {
@@ -44,10 +44,10 @@ function updateCss(element, i) {
       yRailOffset.left = i.scrollbarYLeft + element.scrollLeft;
     }
   }
-  d.css(i.scrollbarYRail, yRailOffset);
+  dom.css(i.scrollbarYRail, yRailOffset);
 
-  d.css(i.scrollbarX, {left: i.scrollbarXLeft, width: i.scrollbarXWidth - i.railBorderXWidth});
-  d.css(i.scrollbarY, {top: i.scrollbarYTop, height: i.scrollbarYHeight - i.railBorderYWidth});
+  dom.css(i.scrollbarX, {left: i.scrollbarXLeft, width: i.scrollbarXWidth - i.railBorderXWidth});
+  dom.css(i.scrollbarY, {top: i.scrollbarYTop, height: i.scrollbarYHeight - i.railBorderYWidth});
 }
 
 module.exports = function (element) {
@@ -60,30 +60,30 @@ module.exports = function (element) {
 
   var existingRails;
   if (!element.contains(i.scrollbarXRail)) {
-    existingRails = d.queryChildren(element, '.ps-scrollbar-x-rail');
+    existingRails = dom.queryChildren(element, '.ps-scrollbar-x-rail');
     if (existingRails.length > 0) {
       existingRails.forEach(function (rail) {
-        d.remove(rail);
+        dom.remove(rail);
       });
     }
-    d.appendTo(i.scrollbarXRail, element);
+    dom.appendTo(i.scrollbarXRail, element);
   }
   if (!element.contains(i.scrollbarYRail)) {
-    existingRails = d.queryChildren(element, '.ps-scrollbar-y-rail');
+    existingRails = dom.queryChildren(element, '.ps-scrollbar-y-rail');
     if (existingRails.length > 0) {
       existingRails.forEach(function (rail) {
-        d.remove(rail);
+        dom.remove(rail);
       });
     }
-    d.appendTo(i.scrollbarYRail, element);
+    dom.appendTo(i.scrollbarYRail, element);
   }
 
   if (!i.settings.suppressScrollX && i.containerWidth + i.settings.scrollXMarginOffset < i.contentWidth) {
     i.scrollbarXActive = true;
     i.railXWidth = i.containerWidth - i.railXMarginWidth;
     i.railXRatio = i.containerWidth / i.railXWidth;
-    i.scrollbarXWidth = getThumbSize(i, h.toInt(i.railXWidth * i.containerWidth / i.contentWidth));
-    i.scrollbarXLeft = h.toInt((i.negativeScrollAdjustment + element.scrollLeft) * (i.railXWidth - i.scrollbarXWidth) / (i.contentWidth - i.containerWidth));
+    i.scrollbarXWidth = getThumbSize(i, _.toInt(i.railXWidth * i.containerWidth / i.contentWidth));
+    i.scrollbarXLeft = _.toInt((i.negativeScrollAdjustment + element.scrollLeft) * (i.railXWidth - i.scrollbarXWidth) / (i.contentWidth - i.containerWidth));
   } else {
     i.scrollbarXActive = false;
   }
@@ -92,8 +92,8 @@ module.exports = function (element) {
     i.scrollbarYActive = true;
     i.railYHeight = i.containerHeight - i.railYMarginHeight;
     i.railYRatio = i.containerHeight / i.railYHeight;
-    i.scrollbarYHeight = getThumbSize(i, h.toInt(i.railYHeight * i.containerHeight / i.contentHeight));
-    i.scrollbarYTop = h.toInt(element.scrollTop * (i.railYHeight - i.scrollbarYHeight) / (i.contentHeight - i.containerHeight));
+    i.scrollbarYHeight = getThumbSize(i, _.toInt(i.railYHeight * i.containerHeight / i.contentHeight));
+    i.scrollbarYTop = _.toInt(element.scrollTop * (i.railYHeight - i.scrollbarYHeight) / (i.contentHeight - i.containerHeight));
   } else {
     i.scrollbarYActive = false;
   }

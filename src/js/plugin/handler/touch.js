@@ -1,8 +1,9 @@
 'use strict';
 
-var instances = require('../instances')
-  , updateGeometry = require('../update-geometry')
-  , updateScroll = require('../update-scroll');
+var _ = require('../../lib/helper');
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
 
 function bindTouchHandler(element, i, supportsTouch, supportsIePointer) {
   function shouldPreventDefault(deltaX, deltaY) {
@@ -87,6 +88,9 @@ function bindTouchHandler(element, i, supportsTouch, supportsIePointer) {
     }
   }
   function touchMove(e) {
+    if (!inLocalTouch && i.settings.swipePropagation) {
+      touchStart(e);
+    }
     if (!inGlobalTouch && inLocalTouch && shouldHandle(e)) {
       var touch = getTouch(e);
 
@@ -162,7 +166,11 @@ function bindTouchHandler(element, i, supportsTouch, supportsIePointer) {
   }
 }
 
-module.exports = function (element, supportsTouch, supportsIePointer) {
+module.exports = function (element) {
+  if (!_.env.supportsTouch && !_.env.supportsIePointer) {
+    return;
+  }
+
   var i = instances.get(element);
-  bindTouchHandler(element, i, supportsTouch, supportsIePointer);
+  bindTouchHandler(element, i, _.env.supportsTouch, _.env.supportsIePointer);
 };

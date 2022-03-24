@@ -2,18 +2,18 @@
 
 var instances = require('./instances');
 
-var upEvent = document.createEvent('Event')
-  , downEvent = document.createEvent('Event')
-  , leftEvent = document.createEvent('Event')
-  , rightEvent = document.createEvent('Event')
-  , yEvent = document.createEvent('Event')
-  , xEvent = document.createEvent('Event')
-  , xStartEvent = document.createEvent('Event')
-  , xEndEvent = document.createEvent('Event')
-  , yStartEvent = document.createEvent('Event')
-  , yEndEvent = document.createEvent('Event')
-  , lastTop
-  , lastLeft;
+var upEvent = document.createEvent('Event');
+var downEvent = document.createEvent('Event');
+var leftEvent = document.createEvent('Event');
+var rightEvent = document.createEvent('Event');
+var yEvent = document.createEvent('Event');
+var xEvent = document.createEvent('Event');
+var xStartEvent = document.createEvent('Event');
+var xEndEvent = document.createEvent('Event');
+var yStartEvent = document.createEvent('Event');
+var yEndEvent = document.createEvent('Event');
+var lastTop;
+var lastLeft;
 
 upEvent.initEvent('ps-scroll-up', true, true);
 downEvent.initEvent('ps-scroll-down', true, true);
@@ -52,12 +52,26 @@ module.exports = function (element, axis, value) {
   var i = instances.get(element);
 
   if (axis === 'top' && value >= i.contentHeight - i.containerHeight) {
-    element.scrollTop = value = i.contentHeight - i.containerHeight; // don't allow scroll past container
+    // don't allow scroll past container
+    value = i.contentHeight - i.containerHeight;
+    if (value - element.scrollTop <= 1) {
+      // mitigates rounding errors on non-subpixel scroll values
+      value = element.scrollTop;
+    } else {
+      element.scrollTop = value;
+    }
     element.dispatchEvent(yEndEvent);
   }
 
   if (axis === 'left' && value >= i.contentWidth - i.containerWidth) {
-    element.scrollLeft = value = i.contentWidth - i.containerWidth; // don't allow scroll past container
+    // don't allow scroll past container
+    value = i.contentWidth - i.containerWidth;
+    if (value - element.scrollLeft <= 1) {
+      // mitigates rounding errors on non-subpixel scroll values
+      value = element.scrollLeft;
+    } else {
+      element.scrollLeft = value;
+    }
     element.dispatchEvent(xEndEvent);
   }
 
