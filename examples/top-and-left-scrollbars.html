@@ -18,13 +18,27 @@
       height: 720px;
     }
 
-    html {
-      direction: rtl;
+    /* Change the alignment of scrollbars */
+    /* Recommendation: modify CSS directly */
+    .ps__rail-x {
+      top: 0px;
+      bottom: auto; /* If using `top`, there shouldn't be a `bottom`. */
+    }
+    .ps__rail-y {
+      left: 0px;
+      right: auto; /* If using `left`, there shouldn't be a `right`. */
+    }
+    .ps__thumb-x {
+      top: 2px;
+      bottom: auto; /* If using `top`, there shouldn't be a `bottom`. */
+    }
+    .ps__thumb-y {
+      left: 2px;
+      right: auto; /* If using `left`, there shouldn't be a `right`. */
     }
     </style>
   </head>
   <body>
-    <center><b>CURRENTLY NOT WORKING</b></center>
     <div id="container">
       <div class="content">
       </div>
