@@ -56,16 +56,24 @@ perfect-scrollbar supports optional parameters.
 
 ### wheelSpeed
 The scroll speed applied to mousewheel event.  
-Default: 10
+**Default: 10**
 
 ### wheelPropagation
 If this option is true, when the scroll reach the end of the side, mousewheel event will be propagated to parent element.  
-Default: false
+**Default: false**
 
 ### minScrollbarLength
 When set to an integer value, the thumb part of the scrollbar will not shrink below that number of pixels.  
-Default: null
- 
+**Default: null**
+
+### useBothWheelAxes
+When set to true, and only one (vertical or horizontal) scrollbar is visible then both vertical and horizontal scrolling will affect the scrollbar.  
+**Default: false**
+
+### useKeyboard
+When set to true, the scroll works with arrow keys on the keyboard. The element is scrolled only when the mouse cursor hovers the element.  
+**Default: true**
+
 How to Use
 ----------
 
@@ -107,6 +115,8 @@ If you want to scroll to somewhere, just use scroll-top css and update.
 $("#Demo").scrollTop(0);
 $("#Demo").perfectScrollbar('update');
 ```
+
+Also you can get the informations about how to use the plugin from example codes in the `examples` directory of the source tree.
 
 Very helpful friends
 --------------------
