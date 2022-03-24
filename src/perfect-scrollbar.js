@@ -39,14 +39,18 @@
     includePadding: false
   };
 
-  var getEventClassName = (function () {
-    var incrementingId = 0;
-    return function () {
-      var id = incrementingId;
-      incrementingId += 1;
-      return '.perfect-scrollbar-' + id;
+  var incrementingId = 0;
+  var eventClassFactory = function () {
+    var id = incrementingId++;
+    return function (eventName) {
+      var className = '.perfect-scrollbar-' + id;
+      if (typeof eventName === 'undefined') {
+        return className;
+      } else {
+        return eventName + className;
+      }
     };
-  })();
+  };
 
   $.fn.perfectScrollbar = function (suppliedSettings, option) {
 
@@ -92,7 +96,7 @@
       var contentHeight;
 
       var isRtl = $this.css('direction') === "rtl";
-      var eventClassName = getEventClassName();
+      var eventClass = eventClassFactory();
       var ownerDocument = this.ownerDocument || document;
 
       var $scrollbarXRail = $("<div class='ps-scrollbar-x-rail'>").appendTo($this);
@@ -194,8 +198,8 @@
 
       function updateGeometry() {
         // Hide scrollbars not to affect scrollWidth and scrollHeight
-        $scrollbarXRail.hide();
-        $scrollbarYRail.hide();
+        $this.removeClass('ps-active-x');
+        $this.removeClass('ps-active-y');
 
         containerWidth = settings.includePadding ? $this.innerWidth() : $this.width();
         containerHeight = settings.includePadding ? $this.innerHeight() : $this.height();
@@ -235,22 +239,9 @@
 
         if (scrollbarXActive) {
           $this.addClass('ps-active-x');
-        } else {
-          $this.removeClass('ps-active-x');
         }
-
         if (scrollbarYActive) {
           $this.addClass('ps-active-y');
-        } else {
-          $this.removeClass('ps-active-y');
-        }
-
-        // Show scrollbars if needed after updated
-        if (!settings.suppressScrollX) {
-          $scrollbarXRail.show();
-        }
-        if (!settings.suppressScrollY) {
-          $scrollbarYRail.show();
         }
       }
 
@@ -258,16 +249,18 @@
         var currentLeft;
         var currentPageX;
 
-        $scrollbarX.bind('mousedown' + eventClassName, function (e) {
+        var inScrolling = false;
+        $scrollbarX.bind(eventClass('mousedown'), function (e) {
           currentPageX = e.pageX;
           currentLeft = $scrollbarX.position().left;
           $scrollbarXRail.addClass('in-scrolling');
+          inScrolling = true;
           e.stopPropagation();
           e.preventDefault();
         });
 
-        $(ownerDocument).bind('mousemove' + eventClassName, function (e) {
-          if ($scrollbarXRail.hasClass('in-scrolling')) {
+        $(ownerDocument).bind(eventClass('mousemove'), function (e) {
+          if (inScrolling) {
             updateScrollLeft(currentLeft, e.pageX - currentPageX);
             updateGeometry();
             e.stopPropagation();
@@ -275,8 +268,9 @@
           }
         });
 
-        $(ownerDocument).bind('mouseup' + eventClassName, function (e) {
-          if ($scrollbarXRail.hasClass('in-scrolling')) {
+        $(ownerDocument).bind(eventClass('mouseup'), function (e) {
+          if (inScrolling) {
+            inScrolling = false;
             $scrollbarXRail.removeClass('in-scrolling');
           }
         });
@@ -289,16 +283,18 @@
         var currentTop;
         var currentPageY;
 
-        $scrollbarY.bind('mousedown' + eventClassName, function (e) {
+        var inScrolling = false;
+        $scrollbarY.bind(eventClass('mousedown'), function (e) {
           currentPageY = e.pageY;
           currentTop = $scrollbarY.position().top;
+          inScrolling = true;
           $scrollbarYRail.addClass('in-scrolling');
           e.stopPropagation();
           e.preventDefault();
         });
 
-        $(ownerDocument).bind('mousemove' + eventClassName, function (e) {
-          if ($scrollbarYRail.hasClass('in-scrolling')) {
+        $(ownerDocument).bind(eventClass('mousemove'), function (e) {
+          if (inScrolling) {
             updateScrollTop(currentTop, e.pageY - currentPageY);
             updateGeometry();
             e.stopPropagation();
@@ -306,8 +302,9 @@
           }
         });
 
-        $(ownerDocument).bind('mouseup' + eventClassName, function (e) {
-          if ($scrollbarYRail.hasClass('in-scrolling')) {
+        $(ownerDocument).bind(eventClass('mouseup'), function (e) {
+          if (inScrolling) {
+            inScrolling = false;
             $scrollbarYRail.removeClass('in-scrolling');
           }
         });
@@ -410,23 +407,23 @@
         }
 
         if (typeof window.onwheel !== "undefined") {
-          $this.bind('wheel' + eventClassName, mousewheelHandler);
+          $this.bind(eventClass('wheel'), mousewheelHandler);
         } else if (typeof window.onmousewheel !== "undefined") {
-          $this.bind('mousewheel' + eventClassName, mousewheelHandler);
+          $this.bind(eventClass('mousewheel'), mousewheelHandler);
         }
       }
 
       function bindKeyboardHandler() {
         var hovered = false;
-        $this.bind('mouseenter' + eventClassName, function (e) {
+        $this.bind(eventClass('mouseenter'), function (e) {
           hovered = true;
         });
-        $this.bind('mouseleave' + eventClassName, function (e) {
+        $this.bind(eventClass('mouseleave'), function (e) {
           hovered = false;
         });
 
         var shouldPrevent = false;
-        $(ownerDocument).bind('keydown' + eventClassName, function (e) {
+        $(ownerDocument).bind(eventClass('keydown'), function (e) {
           if (e.isDefaultPrevented && e.isDefaultPrevented()) {
             return;
           }
@@ -498,8 +495,8 @@
       function bindRailClickHandler() {
         function stopPropagation(e) { e.stopPropagation(); }
 
-        $scrollbarY.bind('click' + eventClassName, stopPropagation);
-        $scrollbarYRail.bind('click' + eventClassName, function (e) {
+        $scrollbarY.bind(eventClass('click'), stopPropagation);
+        $scrollbarYRail.bind(eventClass('click'), function (e) {
           var halfOfScrollbarLength = int(scrollbarYHeight / 2);
           var positionTop = e.pageY - $scrollbarYRail.offset().top - halfOfScrollbarLength;
           var maxPositionTop = containerHeight - scrollbarYHeight;
@@ -514,8 +511,8 @@
           $this.scrollTop((contentHeight - containerHeight) * positionRatio);
         });
 
-        $scrollbarX.bind('click' + eventClassName, stopPropagation);
-        $scrollbarXRail.bind('click' + eventClassName, function (e) {
+        $scrollbarX.bind(eventClass('click'), stopPropagation);
+        $scrollbarXRail.bind(eventClass('click'), function (e) {
           var halfOfScrollbarLength = int(scrollbarXWidth / 2);
           var positionLeft = e.pageX - $scrollbarXRail.offset().left - halfOfScrollbarLength;
           var maxPositionLeft = containerWidth - scrollbarXWidth;
@@ -528,6 +525,101 @@
           }
 
           $this.scrollLeft((contentWidth - containerWidth) * positionRatio);
+        });
+      }
+
+      function bindSelectionHandler() {
+        function getRangeNode() {
+          var selection = window.getSelection ? window.getSelection() :
+                          document.getSlection ? document.getSlection() : {rangeCount: 0};
+          if (selection.rangeCount === 0) {
+            return null;
+          } else {
+            return selection.getRangeAt(0).commonAncestorContainer;
+          }
+        }
+
+        var scrollingLoop = null;
+        var scrollDiff = {top: 0, left: 0};
+        function startScrolling() {
+          if (!scrollingLoop) {
+            scrollingLoop = setInterval(function () {
+              $this.scrollTop($this.scrollTop() + scrollDiff.top);
+              $this.scrollLeft($this.scrollLeft() + scrollDiff.left);
+              updateGeometry();
+            }, 50); // every .1 sec
+          }
+        }
+        function stopScrolling() {
+          if (scrollingLoop) {
+            clearInterval(scrollingLoop);
+            scrollingLoop = null;
+          }
+          $scrollbarXRail.removeClass('in-scrolling');
+          $scrollbarYRail.removeClass('in-scrolling');
+        }
+
+        var isSelected = false;
+        $(ownerDocument).bind(eventClass('selectionchange'), function (e) {
+          if ($.contains($this[0], getRangeNode())) {
+            isSelected = true;
+          } else {
+            isSelected = false;
+            stopScrolling();
+          }
+        });
+        $(window).bind(eventClass('mouseup'), function (e) {
+          if (isSelected) {
+            isSelected = false;
+            stopScrolling();
+          }
+        });
+
+        $(window).bind(eventClass('mousemove'), function (e) {
+          if (isSelected) {
+            var mousePosition = {x: e.pageX, y: e.pageY};
+            var containerOffset = $this.offset();
+            var containerGeometry = {
+              left: containerOffset.left,
+              right: containerOffset.left + $this.outerWidth(),
+              top: containerOffset.top,
+              bottom: containerOffset.top + $this.outerHeight()
+            };
+
+            if (mousePosition.x < containerGeometry.left + 3) {
+              scrollDiff.left = -5;
+              $scrollbarXRail.addClass('in-scrolling');
+            } else if (mousePosition.x > containerGeometry.right - 3) {
+              scrollDiff.left = 5;
+              $scrollbarXRail.addClass('in-scrolling');
+            } else {
+              scrollDiff.left = 0;
+            }
+
+            if (mousePosition.y < containerGeometry.top + 3) {
+              if (containerGeometry.top + 3 - mousePosition.y < 5) {
+                scrollDiff.top = -5;
+              } else {
+                scrollDiff.top = -20;
+              }
+              $scrollbarYRail.addClass('in-scrolling');
+            } else if (mousePosition.y > containerGeometry.bottom - 3) {
+              if (mousePosition.y - containerGeometry.bottom + 3 < 5) {
+                scrollDiff.top = 5;
+              } else {
+                scrollDiff.top = 20;
+              }
+              $scrollbarYRail.addClass('in-scrolling');
+            } else {
+              scrollDiff.top = 0;
+            }
+
+            if (scrollDiff.top === 0 && scrollDiff.left === 0) {
+              stopScrolling();
+            } else {
+              startScrolling();
+            }
+          }
         });
       }
 
@@ -587,7 +679,6 @@
             }
 
             e.stopPropagation();
-            e.preventDefault();
           }
         }
         function touchMove(e) {
@@ -635,40 +726,40 @@
         }
 
         if (supportsTouch) {
-          $(window).bind("touchstart" + eventClassName, globalTouchStart);
-          $(window).bind("touchend" + eventClassName, globalTouchEnd);
-          $this.bind("touchstart" + eventClassName, touchStart);
-          $this.bind("touchmove" + eventClassName, touchMove);
-          $this.bind("touchend" + eventClassName, touchEnd);
+          $(window).bind(eventClass("touchstart"), globalTouchStart);
+          $(window).bind(eventClass("touchend"), globalTouchEnd);
+          $this.bind(eventClass("touchstart"), touchStart);
+          $this.bind(eventClass("touchmove"), touchMove);
+          $this.bind(eventClass("touchend"), touchEnd);
         }
 
         if (supportsIePointer) {
           if (window.PointerEvent) {
-            $(window).bind("pointerdown" + eventClassName, globalTouchStart);
-            $(window).bind("pointerup" + eventClassName, globalTouchEnd);
-            $this.bind("pointerdown" + eventClassName, touchStart);
-            $this.bind("pointermove" + eventClassName, touchMove);
-            $this.bind("pointerup" + eventClassName, touchEnd);
+            $(window).bind(eventClass("pointerdown"), globalTouchStart);
+            $(window).bind(eventClass("pointerup"), globalTouchEnd);
+            $this.bind(eventClass("pointerdown"), touchStart);
+            $this.bind(eventClass("pointermove"), touchMove);
+            $this.bind(eventClass("pointerup"), touchEnd);
           } else if (window.MSPointerEvent) {
-            $(window).bind("MSPointerDown" + eventClassName, globalTouchStart);
-            $(window).bind("MSPointerUp" + eventClassName, globalTouchEnd);
-            $this.bind("MSPointerDown" + eventClassName, touchStart);
-            $this.bind("MSPointerMove" + eventClassName, touchMove);
-            $this.bind("MSPointerUp" + eventClassName, touchEnd);
+            $(window).bind(eventClass("MSPointerDown"), globalTouchStart);
+            $(window).bind(eventClass("MSPointerUp"), globalTouchEnd);
+            $this.bind(eventClass("MSPointerDown"), touchStart);
+            $this.bind(eventClass("MSPointerMove"), touchMove);
+            $this.bind(eventClass("MSPointerUp"), touchEnd);
           }
         }
       }
 
       function bindScrollHandler() {
-        $this.bind('scroll' + eventClassName, function (e) {
+        $this.bind(eventClass('scroll'), function (e) {
           updateGeometry();
         });
       }
 
       function destroy() {
-        $this.unbind(eventClassName);
-        $(window).unbind(eventClassName);
-        $(ownerDocument).unbind(eventClassName);
+        $this.unbind(eventClass());
+        $(window).unbind(eventClass());
+        $(ownerDocument).unbind(eventClass());
         $this.data('perfect-scrollbar', null);
         $this.data('perfect-scrollbar-update', null);
         $this.data('perfect-scrollbar-destroy', null);
@@ -699,7 +790,7 @@
         isScrollbarYUsingRight =
         scrollbarYLeft =
         isRtl =
-        eventClassName = null;
+        eventClass = null;
       }
 
       var supportsTouch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch);
@@ -711,6 +802,7 @@
         bindMouseScrollXHandler();
         bindMouseScrollYHandler();
         bindRailClickHandler();
+        bindSelectionHandler();
         bindMouseWheelHandler();
 
         if (supportsTouch || supportsIePointer) {
