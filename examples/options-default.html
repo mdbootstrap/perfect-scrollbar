@@ -5,7 +5,6 @@
     <title>perfect-scrollbar example</title>
       <link href="../src/perfect-scrollbar.css" rel="stylesheet">
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-      <script src="../src/jquery.mousewheel.js"></script>
       <script src="../src/perfect-scrollbar.js"></script>
       <style>
         .contentHolder { position:relative; margin:0px auto; padding:0px; width: 600px; height: 400px; overflow: hidden; }
@@ -17,6 +16,11 @@
         "use strict";
         $('#Default').perfectScrollbar();
       });
+      var updateSize = function () {
+        var width = parseInt($('#width').val(), 10);
+        var height = parseInt($('#height').val(), 10);
+        $('#Default').width(width).height(height).perfectScrollbar('update');
+      };
     </script>
   </head>
   <body>
@@ -24,6 +28,11 @@
       <div class="content">
       </div>
     </div>
+    <p style='text-align: center'>
+      Width <input type='text' id='width' value='600'>
+      Height <input type='text' id='height' value='400'>
+      <button onclick='updateSize()'>Change!</button>
+    </p>
   </body>
 </html>
 

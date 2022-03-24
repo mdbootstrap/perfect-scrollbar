@@ -19,7 +19,7 @@
 
   // The default settings for the plugin
   var defaultSettings = {
-    wheelSpeed: 10,
+    wheelSpeed: 1,
     wheelPropagation: false,
     minScrollbarLength: null,
     maxScrollbarLength: null,
@@ -123,12 +123,6 @@
 
         var scrollTop = parseInt(scrollbarYTop * (contentHeight - containerHeight) / (containerHeight - scrollbarYHeight), 10);
         $this.scrollTop(scrollTop);
-
-        if (isScrollbarXUsingBottom) {
-          $scrollbarXRail.css({bottom: scrollbarXBottom - scrollTop});
-        } else {
-          $scrollbarXRail.css({top: scrollbarXTop + scrollTop});
-        }
       };
 
       var updateContentScrollLeft = function (currentLeft, deltaX) {
@@ -147,12 +141,6 @@
 
         var scrollLeft = parseInt(scrollbarXLeft * (contentWidth - containerWidth) / (containerWidth - scrollbarXWidth), 10);
         $this.scrollLeft(scrollLeft);
-
-        if (isScrollbarYUsingRight) {
-          $scrollbarYRail.css({right: scrollbarYRight - scrollLeft});
-        } else {
-          $scrollbarYRail.css({left: scrollbarYLeft + scrollLeft});
-        }
       };
 
       var getSettingsAdjustedThumbSize = function (thumbSize) {
@@ -213,6 +201,10 @@
       };
 
       var updateBarSizeAndPosition = function () {
+        // Hide scrollbars not to affect scrollWidth and scrollHeight
+        $scrollbarXRail.hide();
+        $scrollbarYRail.hide();
+
         containerWidth = settings.includePadding ? $this.innerWidth() : $this.width();
         containerHeight = settings.includePadding ? $this.innerHeight() : $this.height();
         contentWidth = $this.prop('scrollWidth');
@@ -250,6 +242,10 @@
         }
 
         updateScrollbarCss();
+
+        // Show scrollbars again after updated
+        $scrollbarXRail.show();
+        $scrollbarYRail.show();
       };
 
       var bindMouseScrollXHandler = function () {
@@ -267,6 +263,7 @@
         $(document).bind('mousemove' + eventClassName, function (e) {
           if ($scrollbarXRail.hasClass('in-scrolling')) {
             updateContentScrollLeft(currentLeft, e.pageX - currentPageX);
+            updateBarSizeAndPosition();
             e.stopPropagation();
             e.preventDefault();
           }
@@ -297,6 +294,7 @@
         $(document).bind('mousemove' + eventClassName, function (e) {
           if ($scrollbarYRail.hasClass('in-scrolling')) {
             updateContentScrollTop(currentTop, e.pageY - currentPageY);
+            updateBarSizeAndPosition();
             e.stopPropagation();
             e.preventDefault();
           }
@@ -338,16 +336,38 @@
 
       // bind handlers
       var bindMouseWheelHandler = function () {
-        // FIXME: Backward compatibility.
-        // After e.deltaFactor applied, wheelSpeed should have smaller value.
-        // Currently, there's no way to change the settings after the scrollbar initialized.
-        // But if the way is implemented in the future, wheelSpeed should be reset.
-        settings.wheelSpeed /= 10;
-
         var shouldPrevent = false;
-        $this.bind('mousewheel' + eventClassName, function (e, deprecatedDelta, deprecatedDeltaX, deprecatedDeltaY) {
-          var deltaX = e.deltaX * e.deltaFactor || deprecatedDeltaX,
-              deltaY = e.deltaY * e.deltaFactor || deprecatedDeltaY;
+
+        var getDeltaFromEvent = function (e) {
+          var deltaX = e.originalEvent.deltaX,
+              deltaY = -1 * e.originalEvent.deltaY;
+
+          if (typeof deltaX === "undefined" || typeof deltaY === "undefined") {
+            // OS X Safari
+            deltaX = -1 * e.originalEvent.wheelDeltaX / 6;
+            deltaY = e.originalEvent.wheelDeltaY / 6;
+          }
+
+          if (e.originalEvent.deltaMode && e.originalEvent.deltaMode === 1) {
+            // Firefox in deltaMode 1: Line scrolling
+            deltaX *= 10;
+            deltaY *= 10;
+          }
+
+          if (deltaX !== deltaX && deltaY !== deltaY/* NaN checks */) {
+            // IE in some mouse drivers
+            deltaX = 0;
+            deltaY = e.originalEvent.wheelDelta;
+          }
+
+          return [deltaX, deltaY];
+        };
+
+        var mousewheelHandler = function (e) {
+          var delta = getDeltaFromEvent(e);
+
+          var deltaX = delta[0],
+              deltaY = delta[1];
 
           shouldPrevent = false;
           if (!settings.useBothWheelAxes) {
@@ -383,14 +403,13 @@
             e.stopPropagation();
             e.preventDefault();
           }
-        });
+        };
 
-        // fix Firefox scroll problem
-        $this.bind('MozMousePixelScroll' + eventClassName, function (e) {
-          if (shouldPrevent) {
-            e.preventDefault();
-          }
-        });
+        if (typeof window.onwheel !== "undefined") {
+          $this.bind('wheel' + eventClassName, mousewheelHandler);
+        } else if (typeof window.onmousewheel !== "undefined") {
+          $this.bind('mousewheel' + eventClassName, mousewheelHandler);
+        }
       };
 
       var bindKeyboardHandler = function () {
@@ -673,11 +692,10 @@
         bindMouseScrollXHandler();
         bindMouseScrollYHandler();
         bindRailClickHandler();
+        bindMouseWheelHandler();
+
         if (supportsTouch) {
           bindMobileTouchHandler();
-        }
-        if ($this.mousewheel) {
-          bindMouseWheelHandler();
         }
         if (settings.useKeyboard) {
           bindKeyboardHandler();
