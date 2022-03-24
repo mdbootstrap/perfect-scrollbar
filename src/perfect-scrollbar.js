@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, 2014 Hyunje Alex Jun and other contributors
+/* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
 (function (factory) {
@@ -267,14 +267,14 @@
         };
 
         var mouseUpHandler = function (e) {
-          $scrollbarXRail.removeClass('in-scrolling');
+          $this.removeClass('ps-in-scrolling');
           $(ownerDocument).unbind(eventClass('mousemove'), mouseMoveHandler);
         };
 
         $scrollbarX.bind(eventClass('mousedown'), function (e) {
           currentPageX = e.pageX;
           currentLeft = $scrollbarX.position().left;
-          $scrollbarXRail.addClass('in-scrolling');
+          $this.addClass('ps-in-scrolling');
 
           $(ownerDocument).bind(eventClass('mousemove'), mouseMoveHandler);
           $(ownerDocument).one(eventClass('mouseup'), mouseUpHandler);
@@ -299,14 +299,14 @@
         };
 
         var mouseUpHandler = function (e) {
-          $scrollbarYRail.removeClass('in-scrolling');
+          $this.removeClass('ps-in-scrolling');
           $(ownerDocument).unbind(eventClass('mousemove'), mouseMoveHandler);
         };
 
         $scrollbarY.bind(eventClass('mousedown'), function (e) {
           currentPageY = e.pageY;
           currentTop = $scrollbarY.position().top;
-          $scrollbarYRail.addClass('in-scrolling');
+          $this.addClass('ps-in-scrolling');
 
           $(ownerDocument).bind(eventClass('mousemove'), mouseMoveHandler);
           $(ownerDocument).one(eventClass('mouseup'), mouseUpHandler);
@@ -470,12 +470,15 @@
           }
 
           var activeElement = document.activeElement ? document.activeElement : ownerDocument.activeElement;
-          // go deeper if element is a webcomponent
-          while (activeElement.shadowRoot) {
-            activeElement = activeElement.shadowRoot.activeElement;
-          }
-          if ($(activeElement).is(":input,[contenteditable]")) {
-            return;
+
+          if (activeElement) {
+            // go deeper if element is a webcomponent
+            while (activeElement.shadowRoot) {
+              activeElement = activeElement.shadowRoot.activeElement;
+            }
+            if ($(activeElement).is(":input,[contenteditable]")) {
+              return;
+            }
           }
 
           var deltaX = 0;
@@ -597,8 +600,8 @@
             clearInterval(scrollingLoop);
             scrollingLoop = null;
           }
-          $scrollbarXRail.removeClass('in-scrolling');
-          $scrollbarYRail.removeClass('in-scrolling');
+          $this.removeClass('ps-in-scrolling');
+          $this.removeClass('ps-in-scrolling');
         }
 
         var isSelected = false;
@@ -630,10 +633,10 @@
 
             if (mousePosition.x < containerGeometry.left + 3) {
               scrollDiff.left = -5;
-              $scrollbarXRail.addClass('in-scrolling');
+              $this.addClass('ps-in-scrolling');
             } else if (mousePosition.x > containerGeometry.right - 3) {
               scrollDiff.left = 5;
-              $scrollbarXRail.addClass('in-scrolling');
+              $this.addClass('ps-in-scrolling');
             } else {
               scrollDiff.left = 0;
             }
@@ -644,14 +647,14 @@
               } else {
                 scrollDiff.top = -20;
               }
-              $scrollbarYRail.addClass('in-scrolling');
+              $this.addClass('ps-in-scrolling');
             } else if (mousePosition.y > containerGeometry.bottom - 3) {
               if (mousePosition.y - containerGeometry.bottom + 3 < 5) {
                 scrollDiff.top = 5;
               } else {
                 scrollDiff.top = 20;
               }
-              $scrollbarYRail.addClass('in-scrolling');
+              $this.addClass('ps-in-scrolling');
             } else {
               scrollDiff.top = 0;
             }
