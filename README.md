@@ -304,6 +304,10 @@ If this option is true, when the scroll reaches the end of the side, mousewheel 
 If this option is true, when the scroll reaches the end of the side, touch scrolling will be propagated to parent element.  
 **Default**: `true`
 
+### swipeEasing
+If this option is true, swipe scrolling will be eased.
+**Default**: `true`
+
 ### minScrollbarLength
 When set to an integer value, the thumb part of the scrollbar will not shrink below that number of pixels.  
 **Default**: `null`
@@ -438,7 +442,7 @@ For common problems there is a
 
 ## License
 
-The MIT License (MIT) Copyright (c) 2016 Hyunje Alex Jun and other contributors.
+The MIT License (MIT) Copyright (c) 2012-2017 Hyunje Jun and other contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
