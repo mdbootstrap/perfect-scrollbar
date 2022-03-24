@@ -1,6 +1,9 @@
 import * as CSS from '../lib/css';
 import * as DOM from '../lib/dom';
-import { addScrollingClass, removeScrollingClass } from '../lib/class-names';
+import cls, {
+  addScrollingClass,
+  removeScrollingClass,
+} from '../lib/class-names';
 import updateGeometry from '../update-geometry';
 import { toInt } from '../lib/util';
 
@@ -14,6 +17,7 @@ export default function(i) {
     'scrollbarXWidth',
     'scrollLeft',
     'x',
+    'scrollbarXRail',
   ]);
   bindMouseScrollHandler(i, [
     'containerHeight',
@@ -24,6 +28,7 @@ export default function(i) {
     'scrollbarYHeight',
     'scrollTop',
     'y',
+    'scrollbarYRail',
   ]);
 }
 
@@ -38,6 +43,7 @@ function bindMouseScrollHandler(
     scrollbarYHeight,
     scrollTop,
     y,
+    scrollbarYRail,
   ]
 ) {
   const element = i.element;
@@ -58,6 +64,7 @@ function bindMouseScrollHandler(
 
   function mouseUpHandler() {
     removeScrollingClass(i, y);
+    i[scrollbarYRail].classList.remove(cls.state.clicking);
     i.event.unbind(i.ownerDocument, 'mousemove', mouseMoveHandler);
   }
 
@@ -70,6 +77,8 @@ function bindMouseScrollHandler(
 
     i.event.bind(i.ownerDocument, 'mousemove', mouseMoveHandler);
     i.event.once(i.ownerDocument, 'mouseup', mouseUpHandler);
+
+    i[scrollbarYRail].classList.add(cls.state.clicking);
 
     e.stopPropagation();
     e.preventDefault();

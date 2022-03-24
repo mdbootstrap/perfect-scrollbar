@@ -7,6 +7,7 @@ const cls = {
   },
   state: {
     focus: 'ps--focus',
+    clicking: 'ps--clicking',
     active: x => `ps--active-${x}`,
     scrolling: x => `ps--scrolling-${x}`,
   },
