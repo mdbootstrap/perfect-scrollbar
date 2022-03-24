@@ -6,9 +6,10 @@ import { toInt } from './lib/util';
 export default function(i) {
   const element = i.element;
   const roundedScrollTop = Math.floor(element.scrollTop);
+  const rect = element.getBoundingClientRect();
 
-  i.containerWidth = element.clientWidth;
-  i.containerHeight = element.clientHeight;
+  i.containerWidth = Math.ceil(rect.width);
+  i.containerHeight = Math.ceil(rect.height);
   i.contentWidth = element.scrollWidth;
   i.contentHeight = element.scrollHeight;
 
@@ -36,11 +37,11 @@ export default function(i) {
     i.railXRatio = i.containerWidth / i.railXWidth;
     i.scrollbarXWidth = getThumbSize(
       i,
-      toInt(i.railXWidth * i.containerWidth / i.contentWidth)
+      toInt((i.railXWidth * i.containerWidth) / i.contentWidth)
     );
     i.scrollbarXLeft = toInt(
-      (i.negativeScrollAdjustment + element.scrollLeft) *
-        (i.railXWidth - i.scrollbarXWidth) /
+      ((i.negativeScrollAdjustment + element.scrollLeft) *
+        (i.railXWidth - i.scrollbarXWidth)) /
         (i.contentWidth - i.containerWidth)
     );
   } else {
@@ -56,11 +57,10 @@ export default function(i) {
     i.railYRatio = i.containerHeight / i.railYHeight;
     i.scrollbarYHeight = getThumbSize(
       i,
-      toInt(i.railYHeight * i.containerHeight / i.contentHeight)
+      toInt((i.railYHeight * i.containerHeight) / i.contentHeight)
     );
     i.scrollbarYTop = toInt(
-      roundedScrollTop *
-        (i.railYHeight - i.scrollbarYHeight) /
+      (roundedScrollTop * (i.railYHeight - i.scrollbarYHeight)) /
         (i.contentHeight - i.containerHeight)
     );
   } else {
@@ -82,7 +82,7 @@ export default function(i) {
     element.classList.remove(cls.state.active('x'));
     i.scrollbarXWidth = 0;
     i.scrollbarXLeft = 0;
-    element.scrollLeft = 0;
+    element.scrollLeft = i.isRtl === true ? i.contentWidth : 0;
   }
   if (i.scrollbarYActive) {
     element.classList.add(cls.state.active('y'));
@@ -131,7 +131,8 @@ function updateCss(element, i) {
         i.contentWidth -
         (i.negativeScrollAdjustment + element.scrollLeft) -
         i.scrollbarYRight -
-        i.scrollbarYOuterWidth;
+        i.scrollbarYOuterWidth -
+        9;
     } else {
       yRailOffset.right = i.scrollbarYRight - element.scrollLeft;
     }
