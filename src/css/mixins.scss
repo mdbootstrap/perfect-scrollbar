@@ -24,17 +24,18 @@
 
 @mixin in-scrolling($theme) {
   &.ps-in-scrolling {
-    pointer-events: none;
     &.ps-x > .ps-scrollbar-x-rail {
       @include scrollbar-rail-hover($theme);
       > .ps-scrollbar-x {
         @include scrollbar-hover($theme);
+        height: map_get($theme, scrollbar-x-hover-height);
       }
     }
     &.ps-y > .ps-scrollbar-y-rail {
       @include scrollbar-rail-hover($theme);
       > .ps-scrollbar-y {
         @include scrollbar-hover($theme);
+        width: map_get($theme, scrollbar-y-hover-width);
       }
     }
   }
@@ -42,8 +43,8 @@
 
 // Layout and theme mixin
 @mixin ps-container($theme) {
-  -ms-touch-action: none;
-  touch-action: none;
+  -ms-touch-action: auto;
+  touch-action: auto;
   overflow: hidden !important;
   -ms-overflow-style: none;
 
