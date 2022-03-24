@@ -10,6 +10,7 @@ interface PerfectScrollbarOptions {
   suppressScrollY?: boolean;
   scrollXMarginOffset?: number;
   scrollYMarginOffset?: number;
+  theme?: string;
 }
 
 interface PerfectScrollbar {
@@ -20,6 +21,7 @@ interface PerfectScrollbar {
 
 interface JQuery {
   perfectScrollbar(options?: PerfectScrollbarOptions): JQuery;
+  perfectScrollbar(options: string): JQuery;
 }
 
 declare var ps: PerfectScrollbar;
