@@ -1,6 +1,3 @@
-/* Copyright (c) 2015 Hyunje Alex Jun and other contributors
- * Licensed under the MIT License
- */
 'use strict';
 
 var cls = require('../lib/class')
@@ -26,6 +23,7 @@ module.exports = function (element, userSettings) {
   var i = instances.add(element);
 
   i.settings = h.extend(i.settings, userSettings);
+  cls.add(element, 'ps-theme-' + i.settings.theme);
 
   clickRailHandler(element);
   dragScrollbarHandler(element);

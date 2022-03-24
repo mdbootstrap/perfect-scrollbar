@@ -1,9 +1,7 @@
-/* Copyright (c) 2015 Hyunje Alex Jun and other contributors
- * Licensed under the MIT License
- */
 'use strict';
 
 var h = require('../../lib/helper')
+  , d = require('../../lib/dom')
   , instances = require('../instances')
   , updateGeometry = require('../update-geometry')
   , updateScroll = require('../update-scroll');
@@ -46,7 +44,10 @@ function bindKeyboardHandler(element, i) {
       return;
     }
 
-    if (!hovered) {
+    var focused = d.matches(i.scrollbarX, ':focus') ||
+                  d.matches(i.scrollbarY, ':focus');
+
+    if (!hovered && !focused) {
       return;
     }
 

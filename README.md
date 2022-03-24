@@ -218,10 +218,10 @@ require.config({
 and load `perfectScrollbar` in the initialiser of your app:
 
 ```javascript
-# for vanilla JS:
+// for vanilla JS:
 window.Ps = require('perfectScrollbar');
 
-# for jQuery:
+// for jQuery:
 require('perfectScrollbarJQuery');
 ```
 
@@ -250,12 +250,12 @@ function (angular) {
 And initialise perfectScrollbar in a controller:
 
 ```javascript
-# by vanilla JS:
+// by vanilla JS:
 var container = document.getElementById('imgLoader');
 Ps.initialize(container);
 Ps.update(container);
 
-# or by jQuery:
+// or by jQuery:
 var imgLoader = $("#imgLoader")
 imgLoader.perfectScrollbar();
 ```
@@ -315,6 +315,36 @@ When set to false, when clicking on a rail, the click event will be allowed to p
 ### useSelectionScroll
 When set to true, you can scroll the container by selecting text and move the cursor.  
 **Default: false**
+
+### theme
+A string. It's a class name added to the container element. The class name is prepended with `ps-theme-`. So default theme class name is `ps-theme-default`. In order to create custom themes with scss use `ps-container($theme)` mixin, where `$theme` is a scss map.  
+**Default: 'default'**
+
+**Example 1:**
+
+Add `theme` parameter:
+```javascript
+Ps.initialize(container, {
+  theme: 'my-theme-name'
+});
+```
+Create a class name prefixed with `.ps-theme-`. Include `ps-container()` mixin. It's recommended to use `map-merge()` to extend `$ps-theme-default` map with your custom styles.
+```css#
+.ps-theme-my-theme-name {
+  @include ps-container(map-merge($ps-theme-default, (
+    border-radius: 0,
+    scrollbar-x-rail-height: 20px,
+    scrollbar-x-height: 20px,
+    scrollbar-y-rail-width: 20px,
+    scrollbar-y-width: 20px,)
+  ));
+}
+```
+
+**Example 2:**
+
+Alternatively, if you don't want to create your own themes, but only modify the default one, you could simply overwrite `$ps-*` variables with your own values. In this case `theme` parameter is not required when calling `.initialize()` method. Remember do define your own variables before the `theme.scss` file is imported.
+
 
 ## Events
 
@@ -396,7 +426,7 @@ For common problems there is a
 
 ## License
 
-The MIT License (MIT) Copyright (c) 2015 Hyunje Alex Jun and other contributors.
+The MIT License (MIT) Copyright (c) 2016 Hyunje Alex Jun and other contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

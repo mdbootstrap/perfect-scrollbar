@@ -1,6 +1,3 @@
-/* Copyright (c) 2015 Hyunje Alex Jun and other contributors
- * Licensed under the MIT License
- */
 'use strict';
 
 module.exports = {
@@ -16,5 +13,6 @@ module.exports = {
   useKeyboard: true,
   useSelectionScroll: false,
   wheelPropagation: false,
-  wheelSpeed: 1
+  wheelSpeed: 1,
+  theme: 'default'
 };
