@@ -6,14 +6,14 @@ Tiny but perfect jQuery scrollbar plugin
 Why perfect-scrollbar?
 ------------------
 
-I worked on the personal project recently, and I was trying to find the jQuery scrollbar plugin that's *perfect*. But there was no *perfect* scrollbar plugin. That's why I decided to make one.
+I worked on a personal project recently, and I was trying to find the jQuery scrollbar plugin that's *perfect*. But there was no *perfect* scrollbar plugin. That's why I decided to make one.
 
-perfect-scrollbar is very tiny but *perfect*(for me, and maybe for the most of developers) jQuery scrollbar plugin.  
+perfect-scrollbar is very tiny but *perfect* (for me, and maybe for the most of developers) jQuery scrollbar plugin.  
 I hope you love this!
 
 Demo: http://noraesae.github.com/perfect-scrollbar/
 
-What means *perfect*?
+What does *perfect* mean?
 ---------------------
 
 *perfect* means...
@@ -110,7 +110,7 @@ The number of pixels the content height can surpass the container height without
 **Default: 0**
 
 ### includePadding
-When set to true, it uses `outerWidth` and `outerHeight` for the container size instead of `width` and `height`. When your container element has non-zero padding and the scrollbar layout looks weird, this option can be helpful.  
+When set to true, it uses `innerWidth` and `innerHeight` for the container size instead of `width` and `height`. When your container element has non-zero padding and the scrollbar layout looks weird, this option can be helpful.  
 **Default: false**
 
 How to Use
@@ -197,12 +197,10 @@ If you have any idea to improve this project or any problem using this, please f
 License
 -------
 
-The MIT License (MIT) Copyright (c) 2012 HyeonJe Jun.
+The MIT License (MIT) Copyright (c) 2012, 2014 Hyeonje Alex Jun and other contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-**It means, you can freely fork and modify this project for commercial or non-comercial use!**
