@@ -16,8 +16,8 @@ function bindClickRailHandler(element, i) {
   i.event.bind(i.scrollbarY, 'click', stopPropagation);
   i.event.bind(i.scrollbarYRail, 'click', function (e) {
     var halfOfScrollbarLength = h.toInt(i.scrollbarYHeight / 2);
-    var positionTop = e.pageY - pageOffset(i.scrollbarYRail).top - halfOfScrollbarLength;
-    var maxPositionTop = i.containerHeight - i.scrollbarYHeight;
+    var positionTop = i.railYRatio * (e.pageY - window.scrollY - pageOffset(i.scrollbarYRail).top - halfOfScrollbarLength);
+    var maxPositionTop = i.railYRatio * (i.railYHeight - i.scrollbarYHeight);
     var positionRatio = positionTop / maxPositionTop;
 
     if (positionRatio < 0) {
@@ -28,14 +28,15 @@ function bindClickRailHandler(element, i) {
 
     element.scrollTop = (i.contentHeight - i.containerHeight) * positionRatio;
     updateGeometry(element);
+
+    e.stopPropagation();
   });
 
   i.event.bind(i.scrollbarX, 'click', stopPropagation);
   i.event.bind(i.scrollbarXRail, 'click', function (e) {
     var halfOfScrollbarLength = h.toInt(i.scrollbarXWidth / 2);
-    var positionLeft = e.pageX - pageOffset(i.scrollbarXRail).left - halfOfScrollbarLength;
-    console.log(e.pageX, i.scrollbarXRail.offsetLeft);
-    var maxPositionLeft = i.containerWidth - i.scrollbarXWidth;
+    var positionLeft = i.railXRatio * (e.pageX - window.scrollX - pageOffset(i.scrollbarXRail).left - halfOfScrollbarLength);
+    var maxPositionLeft = i.railXRatio * (i.railXWidth - i.scrollbarXWidth);
     var positionRatio = positionLeft / maxPositionLeft;
 
     if (positionRatio < 0) {
@@ -44,8 +45,10 @@ function bindClickRailHandler(element, i) {
       positionRatio = 1;
     }
 
-    element.scrollLeft = (i.contentWidth - i.containerWidth) * positionRatio;
+    element.scrollLeft = ((i.contentWidth - i.containerWidth) * positionRatio) - i.negativeScrollAdjustment;
     updateGeometry(element);
+
+    e.stopPropagation();
   });
 }
 

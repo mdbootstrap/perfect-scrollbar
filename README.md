@@ -46,6 +46,7 @@ I hope you love it!
   to update the size or position of the scrollbar, just update.
 * Additionally, perfect-scrollbar uses 'scrollTop' and 'scrollLeft',
   not absolute positioning or something messy.
+* perfect-scrollbar supports RTL perfectly on both WebKit and Gecko based browsers.
 
 It's cool, isn't it?
 
@@ -197,6 +198,66 @@ $('#container').perfectScrollbar();          // Initialize
 $('#container').perfectScrollbar({ ... });   // with options
 $('#container').perfectScrollbar('update');  // Update
 $('#container').perfectScrollbar('destroy'); // Destroy
+```
+
+## RequireJS  usage
+
+For RequireJS loader, no need to write shim, simply import two libs:
+
+```javascript
+require.config({
+  paths: {
+    perfectScrollbarJQuery: '.../perfect-scrollbar.jquery',
+    perfectScrollbar: '.../perfect-scrollbar',
+  }
+  ...
+})
+```
+
+
+and load `perfectScrollbar` in the initialiser of your app:
+
+```javascript
+# for vanilla JS:
+window.Ps = require('perfectScrollbar');
+
+# for jQuery:
+require('perfectScrollbarJQuery');
+```
+
+
+## AngularJS + RequireJS usage
+
+With the require.config settings above, at the beginning of your app module
+definition, you can have following code:
+
+```javascript
+define([
+  'angular',
+  'perfectScrollbar',
+  'perfectScrollbarJquery'
+],
+function (angular) {
+  var myApp = angular.module('myApp', [])
+  .run(function() {
+    window.Ps = require('perfectScrollbar');
+    require('perfectScrollbarJQuery');
+  })
+  return myApp;
+});
+```
+
+And initialise perfectScrollbar in a controller:
+
+```javascript
+# by vanilla JS:
+var container = document.getElementById('imgLoader');
+Ps.initialize(container);
+Ps.update(container);
+
+# or by jQuery:
+var imgLoader = $("#imgLoader")
+imgLoader.perfectScrollbar();
 ```
 
 ## Optional parameters
