@@ -36,12 +36,31 @@ Yes! the only thing that's not *perfect* is my English.
 
 It's cool, isn't it?
 
+Install
+-------
+
+You can download the latest stable version with download links in [Github Page](http://noraesae.github.io/perfect-scrollbar/). You also can find all releases in [Releases](https://github.com/noraesae/perfect-scrollbar/releases) page.
+
+If you want to use the development version of the plugin, use the source files which are not minified. They're in the `src` directory. The development version may be unstable, but some known bugs can be fixed.
+
+```
+git clone https://github.com/noraesae/perfect-scrollbar.git
+cd perfect-scrollbar/src
+```
+
+You can use [Bower](http://bower.io/) to install the plugin. The plugin is registered as `perfect-scrollbar`.
+
+```
+bower install perfect-scrollbar
+```
+
 Requirements
 ------------
 
 To make this plugin *perfect*, some requirements were not avoidable. But they're all very trivial and there's nothing to worry about.
 
 * the container must have a 'position' css style.
+* the container must have an 'overflow:hidden' css style.
 * the scrollbar's position must be 'absolute'.
 * the scrollbar-x must have a 'bottom' css style, and the scrollbar-y must have a 'right' css style.
 
@@ -89,6 +108,10 @@ The number of pixels the content width can surpass the container width without e
 ### scrollYMarginOffset
 The number of pixels the content height can surpass the container height without enabling the Y axis scroll bar. Allows some "wiggle room" or "offset break", so that Y axis scroll bar is not enabled just because of a few pixels.  
 **Default: 0**
+
+### includePadding
+When set to true, it uses `outerWidth` and `outerHeight` for the container size instead of `width` and `height`. When your container element has non-zero padding and the scrollbar layout looks weird, this option can be helpful.  
+**Default: false**
 
 How to Use
 ----------
@@ -166,6 +189,11 @@ From jQuery 2.0, jQuery also will not support IE 6/7/8. I also think that suppor
 
 When old IEs should be supported, please fork the project and make patches personally.
 
+Helpdesk
+--------
+
+If you have any idea to improve this project or any problem using this, please feel free to upload an [issue](https://github.com/noraesae/perfect-scrollbar/issues).
+
 License
 -------
 
@@ -178,9 +206,3 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 **It means, you can freely fork and modify this project for commercial or non-comercial use!**
-
-Helpdesk
---------
-
-If you have any idea to improve this project or any problems using this, please feel free to contact me.  
-Email: noraesae@yuiazu.net
