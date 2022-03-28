@@ -36,7 +36,7 @@ We hope you will love it!
 
 ## Live preview
 
-Check out the [Live Preview](https://mdbootstrap.com/snippets/standard/marveluck/3498209?utm_source=GitHub&utm_medium=PerfectScrollbar) snippet. You can fork it right away for testing and experimenting purposes.
+Check out the [Live Preview](https://mdbootstrap.com/snippets/standard/marveluck/3498209/?utm_source=GitHub&utm_medium=PerfectScrollbar) snippet. You can fork it right away for testing and experimenting purposes.
 
 
 
