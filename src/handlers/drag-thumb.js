@@ -58,7 +58,10 @@ function bindMouseScrollHandler(
     }
     element[scrollTop] =
       startingScrollTop + scrollBy * (e[pageY] - startingMousePageY);
-    addScrollingClass(i, y);
+    if (!i.settings.alwaysShowY) {
+      addScrollingClass(i, y);
+    }
+
     updateGeometry(i);
 
     e.stopPropagation();
@@ -68,7 +71,9 @@ function bindMouseScrollHandler(
   }
 
   function mouseUpHandler() {
-    removeScrollingClass(i, y);
+    if (!i.settings.alwaysShowY) {
+      removeScrollingClass(i, y);
+    }
     i[scrollbarYRail].classList.remove(cls.state.clicking);
     i.event.unbind(i.ownerDocument, 'mousemove', mouseMoveHandler);
   }
