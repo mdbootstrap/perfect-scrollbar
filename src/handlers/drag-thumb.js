@@ -67,10 +67,19 @@ function bindMouseScrollHandler(
     }
   }
 
-  function mouseUpHandler() {
+  function scrollingEnd () {
     removeScrollingClass(i, y);
     i[scrollbarYRail].classList.remove(cls.state.clicking);
+  }
+
+  function mouseUpHandler() {
+    scrollingEnd();
     i.event.unbind(i.ownerDocument, 'mousemove', mouseMoveHandler);
+  }
+
+  function touchEndHandler() {
+    scrollingEnd();
+    i.event.unbind(i.ownerDocument, 'touchmove', mouseMoveHandler);
   }
 
   function bindMoves(e, touchMode) {
@@ -88,6 +97,7 @@ function bindMouseScrollHandler(
       e.preventDefault();
     } else {
       i.event.bind(i.ownerDocument, 'touchmove', mouseMoveHandler);
+      i.event.once(i.ownerDocument, 'touchend', touchEndHandler);
     }
 
     i[scrollbarYRail].classList.add(cls.state.clicking);
