@@ -20,10 +20,10 @@ export default function(i) {
     let hitsBound;
 
     // pick axis with primary direction
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      hitsBound = isTop || isBottom;
+    if (Math.abs(deltaY) >= Math.abs(deltaX)) {
+      hitsBound = (isTop && deltaY > 0) || (isBottom && deltaY < 0);
     } else {
-      hitsBound = isLeft || isRight;
+      hitsBound = (isLeft && deltaX > 0) || (isRight && deltaX < 0);
     }
 
     return hitsBound ? !i.settings.wheelPropagation : true;
