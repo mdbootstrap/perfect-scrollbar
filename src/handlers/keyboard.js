@@ -13,12 +13,16 @@ export default function(i) {
     const scrollTop = Math.floor(element.scrollTop);
     if (deltaX === 0) {
       if (!i.scrollbarYActive) {
-        return false;
+        return !i.settings.wheelPropagationDisabledIfScrollable;
       }
       if (
         (scrollTop === 0 && deltaY > 0) ||
         (scrollTop >= i.contentHeight - i.containerHeight && deltaY < 0)
       ) {
+        if (i.settings.wheelPropagationDisabledIfScrollable) {
+          return true;
+        }
+
         return !i.settings.wheelPropagation;
       }
     }

@@ -26,7 +26,15 @@ export default function(i) {
       hitsBound = isLeft || isRight;
     }
 
-    return hitsBound ? !i.settings.wheelPropagation : true;
+    if (hitsBound) {
+      if (i.settings.wheelPropagationDisabledIfScrollable) {
+        return element.scrollHeight > element.clientHeight;
+      }
+
+      return !i.settings.wheelPropagation;
+    }
+
+    return true;
   }
 
   function getDeltaFromEvent(e) {
