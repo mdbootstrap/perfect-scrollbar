@@ -1,6 +1,6 @@
 /*!
- * perfect-scrollbar v1.5.3
- * Copyright 2021 Hyunje Jun, MDBootstrap and Contributors
+ * perfect-scrollbar v1.5.5
+ * Copyright 2022 Hyunje Jun, MDBootstrap and Contributors
  * Licensed under MIT
  */
 
@@ -611,12 +611,16 @@ function keyboard(i) {
     var scrollTop = Math.floor(element.scrollTop);
     if (deltaX === 0) {
       if (!i.scrollbarYActive) {
-        return false;
+        return !i.settings.wheelPropagationDisabledIfScrollable;
       }
       if (
         (scrollTop === 0 && deltaY > 0) ||
         (scrollTop >= i.contentHeight - i.containerHeight && deltaY < 0)
       ) {
+        if (i.settings.wheelPropagationDisabledIfScrollable) {
+          return true;
+        }
+
         return !i.settings.wheelPropagation;
       }
     }
@@ -766,7 +770,15 @@ function wheel(i) {
       hitsBound = isLeft || isRight;
     }
 
-    return hitsBound ? !i.settings.wheelPropagation : true;
+    if (hitsBound) {
+      if (i.settings.wheelPropagationDisabledIfScrollable) {
+        return element.scrollHeight > element.clientHeight;
+      }
+
+      return !i.settings.wheelPropagation;
+    }
+
+    return true;
   }
 
   function getDeltaFromEvent(e) {
@@ -1127,6 +1139,7 @@ var defaultSettings = function () { return ({
   swipeEasing: true,
   useBothWheelAxes: false,
   wheelPropagation: true,
+  wheelPropagationDisabledIfScrollable: false,
   wheelSpeed: 1,
 }); };
 

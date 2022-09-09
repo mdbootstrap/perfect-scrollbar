@@ -44,6 +44,18 @@
       font-size: 20px;
     }
 
+    .container .content-no-scroll {
+      background-image: url('https://mdbootstrap.com/img/Marketing/general/logo/big/mdb.png');
+      width: 12800px;
+      height: 200px;
+      color: blue;
+      font-size: 20px;
+    }
+
+    .container .smaller-font-size {
+      font-size: 12px;
+    }
+
     .space {
       padding: 150px 0;
       text-align: center;
@@ -95,9 +107,9 @@
     <br>
     <div class="space my-5">FOR SPACE</div>
     <div class="container">
-      <div class="content">
+      <div class="content-no-scroll">
         <div class="alert alert-primary sticky-top font-weight-bold m-5" role="alert" style="z-index: 10; width:300px">
-          Default
+          Default (not scrollable)
         </div>
       </div>
     </div>
@@ -105,7 +117,31 @@
     <div class="container">
       <div class="content">
         <div class="alert alert-primary sticky-top font-weight-bold m-5" role="alert" style="z-index: 10; width:300px">
-          wheelPropagation: true
+          Default (scrollable)
+        </div>
+      </div>
+    </div>
+    <div class="space my-5">FOR SPACE</div>
+    <div class="container">
+      <div class="content">
+        <div class="alert alert-primary sticky-top font-weight-bold m-5" role="alert" style="z-index: 10; width:300px">
+          wheelPropagation: false
+        </div>
+      </div>
+    </div>
+    <div class="space my-5">FOR SPACE</div>
+    <div class="container">
+      <div class="content-no-scroll">
+        <div class="alert alert-primary sticky-top font-weight-bold m-5 smaller-font-size" role="alert" style="z-index: 10; width:300px">
+          wheelPropagationDisabledIfScrollable: true<br>(not scrollable)
+        </div>
+      </div>
+    </div>
+    <div class="space my-5">FOR SPACE</div>
+    <div class="container">
+      <div class="content">
+        <div class="alert alert-primary sticky-top font-weight-bold m-5 smaller-font-size" role="alert" style="z-index: 10; width:300px">
+          wheelPropagationDisabledIfScrollable: true<br>(scrollable)
         </div>
       </div>
     </div>
@@ -119,11 +155,19 @@
     var containers = document.querySelectorAll('.container');
 
     new PerfectScrollbar(containers[0]);
+    new PerfectScrollbar(containers[1]);
 
-    new PerfectScrollbar(containers[1], {
-      wheelPropagation: true
+    new PerfectScrollbar(containers[2], {
+      wheelPropagation: false
     });
 
+    new PerfectScrollbar(containers[3], {
+      wheelPropagationDisabledIfScrollable: true
+    });
+
+    new PerfectScrollbar(containers[4], {
+      wheelPropagationDisabledIfScrollable: true
+    });
   </script>
 
 
