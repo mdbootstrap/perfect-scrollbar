@@ -41,7 +41,7 @@ export default class EventManager {
   }
 
   eventElement(element) {
-    let ee = this.eventElements.filter(ee => ee.element === element)[0];
+    let ee = this.eventElements.find(ee => ee.element === element);
     if (!ee) {
       ee = new EventElement(element);
       this.eventElements.push(ee);
