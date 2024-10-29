@@ -19,7 +19,7 @@ message="v$version
 
 Please refer to Releases for changelog.
 
-https://github.com/utatti/perfect-scrollbar/releases"
+https://github.com/mdbootstrap/perfect-scrollbar/releases"
 
 # Commit, tag, and show detail and file names
 git commit . -m "$message"

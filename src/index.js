@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import * as CSS from './lib/css';
 import * as DOM from './lib/dom';
 import cls from './lib/class-names';
@@ -98,12 +100,10 @@ export default class PerfectScrollbar {
     } else {
       this.isScrollbarXUsingBottom = true;
     }
-    this.railBorderXWidth =
-      toInt(railXStyle.borderLeftWidth) + toInt(railXStyle.borderRightWidth);
+    this.railBorderXWidth = toInt(railXStyle.borderLeftWidth) + toInt(railXStyle.borderRightWidth);
     // Set rail to display:block to calculate margins
     CSS.set(this.scrollbarXRail, { display: 'block' });
-    this.railXMarginWidth =
-      toInt(railXStyle.marginLeft) + toInt(railXStyle.marginRight);
+    this.railXMarginWidth = toInt(railXStyle.marginLeft) + toInt(railXStyle.marginRight);
     CSS.set(this.scrollbarXRail, { display: '' });
     this.railXWidth = null;
     this.railXRatio = null;
@@ -127,11 +127,9 @@ export default class PerfectScrollbar {
       this.isScrollbarYUsingRight = true;
     }
     this.scrollbarYOuterWidth = this.isRtl ? outerWidth(this.scrollbarY) : null;
-    this.railBorderYWidth =
-      toInt(railYStyle.borderTopWidth) + toInt(railYStyle.borderBottomWidth);
+    this.railBorderYWidth = toInt(railYStyle.borderTopWidth) + toInt(railYStyle.borderBottomWidth);
     CSS.set(this.scrollbarYRail, { display: 'block' });
-    this.railYMarginHeight =
-      toInt(railYStyle.marginTop) + toInt(railYStyle.marginBottom);
+    this.railYMarginHeight = toInt(railYStyle.marginTop) + toInt(railYStyle.marginBottom);
     CSS.set(this.scrollbarYRail, { display: '' });
     this.railYHeight = null;
     this.railYRatio = null;
@@ -153,11 +151,11 @@ export default class PerfectScrollbar {
 
     this.isAlive = true;
 
-    this.settings.handlers.forEach(handlerName => handlers[handlerName](this));
+    this.settings.handlers.forEach((handlerName) => handlers[handlerName](this));
 
     this.lastScrollTop = Math.floor(element.scrollTop); // for onScroll only
     this.lastScrollLeft = element.scrollLeft; // for onScroll only
-    this.event.bind(this.element, 'scroll', e => this.onScroll(e));
+    this.event.bind(this.element, 'scroll', (e) => this.onScroll(e));
     updateGeometry(this);
   }
 
@@ -201,11 +199,7 @@ export default class PerfectScrollbar {
 
     updateGeometry(this);
     processScrollDiff(this, 'top', this.element.scrollTop - this.lastScrollTop);
-    processScrollDiff(
-      this,
-      'left',
-      this.element.scrollLeft - this.lastScrollLeft
-    );
+    processScrollDiff(this, 'left', this.element.scrollLeft - this.lastScrollLeft);
 
     this.lastScrollTop = Math.floor(this.element.scrollTop);
     this.lastScrollLeft = this.element.scrollLeft;
@@ -236,7 +230,7 @@ export default class PerfectScrollbar {
   removePsClasses() {
     this.element.className = this.element.className
       .split(' ')
-      .filter(name => !name.match(/^ps([-_].+|)$/))
+      .filter((name) => !name.match(/^ps([-_].+|)$/))
       .join(' ');
   }
 }
