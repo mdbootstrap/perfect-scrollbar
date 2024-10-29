@@ -4,7 +4,7 @@ import * as DOM from '../lib/dom';
 import updateGeometry from '../update-geometry';
 import { isEditable } from '../lib/util';
 
-export default function (i) {
+export default function(i) {
   const element = i.element;
 
   const elementHovered = () => DOM.matches(element, ':hover');
@@ -40,8 +40,11 @@ export default function (i) {
     return true;
   }
 
-  i.event.bind(i.ownerDocument, 'keydown', (e) => {
-    if ((e.isDefaultPrevented && e.isDefaultPrevented()) || e.defaultPrevented) {
+  i.event.bind(i.ownerDocument, 'keydown', e => {
+    if (
+      (e.isDefaultPrevented && e.isDefaultPrevented()) ||
+      e.defaultPrevented
+    ) {
       return;
     }
 

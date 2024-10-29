@@ -1,4 +1,7 @@
-import cls, { addScrollingClass, removeScrollingClass } from '../lib/class-names';
+import cls, {
+  addScrollingClass,
+  removeScrollingClass,
+} from '../lib/class-names';
 import updateGeometry from '../update-geometry';
 
 let activeSlider = null; // Variable to track the currently active slider
@@ -56,7 +59,8 @@ function bindMouseScrollHandler(
     // Only move if the active slider is the one we started with
     if (activeSlider === scrollbarAxis) {
       element[scrollAxis] =
-        startingScrollPosition + scrollBy * (e[pageAxis] - startingMousePagePosition);
+        startingScrollPosition +
+        scrollBy * (e[pageAxis] - startingMousePagePosition);
       addScrollingClass(i, axis);
       updateGeometry(i);
 
@@ -86,7 +90,8 @@ function bindMouseScrollHandler(
       }
       startingMousePagePosition = e[pageAxis];
       scrollBy =
-        (i[contentDimension] - i[containerDimension]) / (i[railDimension] - i[scrollbarDimension]);
+        (i[contentDimension] - i[containerDimension]) /
+        (i[railDimension] - i[scrollbarDimension]);
 
       if (!e.touches) {
         document.addEventListener('mousemove', moveHandler);

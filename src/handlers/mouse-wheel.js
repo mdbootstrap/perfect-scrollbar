@@ -5,7 +5,7 @@ import cls from '../lib/class-names';
 import updateGeometry from '../update-geometry';
 import { env } from '../lib/util';
 
-export default function (i) {
+export default function(i) {
   const element = i.element;
 
   let shouldPrevent = false;
@@ -13,9 +13,11 @@ export default function (i) {
   function shouldPreventDefault(deltaX, deltaY) {
     const roundedScrollTop = Math.floor(element.scrollTop);
     const isTop = element.scrollTop === 0;
-    const isBottom = roundedScrollTop + element.offsetHeight === element.scrollHeight;
+    const isBottom =
+      roundedScrollTop + element.offsetHeight === element.scrollHeight;
     const isLeft = element.scrollLeft === 0;
-    const isRight = element.scrollLeft + element.offsetWidth === element.scrollWidth;
+    const isRight =
+      element.scrollLeft + element.offsetWidth === element.scrollWidth;
 
     let hitsBound;
 

@@ -3,7 +3,7 @@ import cls from '../lib/class-names';
 import * as CSS from '../lib/css';
 import { env } from '../lib/util';
 
-export default function (i) {
+export default function(i) {
   if (!env.supportsTouch && !env.supportsIePointer) {
     return;
   }
@@ -72,7 +72,11 @@ export default function (i) {
     if (e.targetTouches && e.targetTouches.length === 1) {
       return true;
     }
-    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== e.MSPOINTER_TYPE_MOUSE) {
+    if (
+      e.pointerType &&
+      e.pointerType !== 'mouse' &&
+      e.pointerType !== e.MSPOINTER_TYPE_MOUSE
+    ) {
       return true;
     }
     return false;
