@@ -83,9 +83,12 @@ export default function(i) {
       if (deltaY && style.overflowY.match(/(scroll|auto)/)) {
         const maxScrollTop = cursor.scrollHeight - cursor.clientHeight;
         if (maxScrollTop > 0) {
+          // Note: negative deltaY means scrolling down
           if (
-            (cursor.scrollTop > 0 && deltaY < 0) ||
-            (cursor.scrollTop < maxScrollTop && deltaY > 0)
+            // Already scrolled vertically, user is scrolling up
+            (cursor.scrollTop > 0 && deltaY > 0) ||
+            // Hasn't reached bottom, user is scrolling down
+            (cursor.scrollTop < maxScrollTop && deltaY < 0)
           ) {
             return true;
           }
