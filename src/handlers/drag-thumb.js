@@ -51,16 +51,18 @@ function bindMouseScrollHandler(
   let startingMousePagePosition = null;
   let scrollBy = null;
 
-  function moveHandler(e) {
-    if (e.touches && e.touches[0]) {
-      e[pageAxis] = e.touches[0][`page${axis.toUpperCase()}`];
-    }
+  function getPagePosition(e) {
+    return e.touches && e.touches[0]
+      ? e.touches[0][`page${axis.toUpperCase()}`]
+      : e[pageAxis];
+  }
 
+  function moveHandler(e) {
     // Only move if the active slider is the one we started with
     if (activeSlider === scrollbarAxis) {
       element[scrollAxis] =
         startingScrollPosition +
-        scrollBy * (e[pageAxis] - startingMousePagePosition);
+        scrollBy * (getPagePosition(e) - startingMousePagePosition);
       addScrollingClass(i, axis);
       updateGeometry(i);
 
@@ -85,10 +87,7 @@ function bindMouseScrollHandler(
       activeSlider = scrollbarAxis; // Set current slider as active
 
       startingScrollPosition = element[scrollAxis];
-      if (e.touches) {
-        e[pageAxis] = e.touches[0][`page${axis.toUpperCase()}`];
-      }
-      startingMousePagePosition = e[pageAxis];
+      startingMousePagePosition = getPagePosition(e);
       scrollBy =
         (i[contentDimension] - i[containerDimension]) /
         (i[railDimension] - i[scrollbarDimension]);
