@@ -1,6 +1,6 @@
 /*!
  * perfect-scrollbar v1.5.6
- * Copyright 2024 Hyunje Jun, MDBootstrap and Contributors
+ * Copyright 2026 Hyunje Jun, MDBootstrap and Contributors
  * Licensed under MIT
  */
 
@@ -562,16 +562,21 @@
     var startingMousePagePosition = null;
     var scrollBy = null;
 
-    function moveHandler(e) {
+    function getPagePosition(e) {
+      // TouchEvent pageX/pageY are readonly on iOS Safari — never mutate the event.
+      // MouseEvent already exposes pageX/pageY; Touch coords live on touches[0].
       if (e.touches && e.touches[0]) {
-        e[pageAxis] = e.touches[0][("page" + (axis.toUpperCase()))];
+        return e.touches[0][("page" + (axis.toUpperCase()))];
       }
+      return e[pageAxis];
+    }
 
+    function moveHandler(e) {
       // Only move if the active slider is the one we started with
       if (activeSlider === scrollbarAxis) {
         element[scrollAxis] =
           startingScrollPosition +
-          scrollBy * (e[pageAxis] - startingMousePagePosition);
+          scrollBy * (getPagePosition(e) - startingMousePagePosition);
         addScrollingClass(i, axis);
         updateGeometry(i);
 
@@ -596,10 +601,7 @@
         activeSlider = scrollbarAxis; // Set current slider as active
 
         startingScrollPosition = element[scrollAxis];
-        if (e.touches) {
-          e[pageAxis] = e.touches[0][("page" + (axis.toUpperCase()))];
-        }
-        startingMousePagePosition = e[pageAxis];
+        startingMousePagePosition = getPagePosition(e);
         scrollBy =
           (i[contentDimension] - i[containerDimension]) /
           (i[railDimension] - i[scrollbarDimension]);
